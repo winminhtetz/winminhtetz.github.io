@@ -1,0 +1,35 @@
+body{
+	text-align: center;
+	background: #CB356B;  /* fallback for old browsers */
+	background: -webkit-linear-gradient(to left, #BD3F32, #CB356B);  /* Chrome 10-25, Safari 5.1-6 */
+	background: linear-gradient(to left, #BD3F32, #CB356B); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+
+.myDiv{
+	width: 250px;
+	margin: 0 auto;
+	text-align: center;
+	background: ghostwhite;
+	border: 1px solid #CB356B;
+	border-radius: 10px;
+}
+
+#myImg{
+	border: 1px solid whitesmoke;
+	border-radius: 10px;
+}
+
+button{
+	background-color: #415EA9;
+	border: none;
+	font-size: 14px;
+	padding: 5px 24px;
+	border-radius: 8px;
+	color: white;
+	transition-duration: 0.3s;
+}
+
+button:hover{
+	background-color: #CB356B;
+}
