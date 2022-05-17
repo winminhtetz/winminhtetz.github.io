@@ -5,6 +5,9 @@ body{
 	background: linear-gradient(to left, #BD3F32, #CB356B); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
+#info{
+	padding-bottom: 2px;
+}
 
 .myDiv{
 	width: 250px;
@@ -16,11 +19,12 @@ body{
 }
 
 #myImg{
-	border: 1px solid whitesmoke;
-	border-radius: 10px;
+	border-radius: 100px;
 }
 
 button{
+	margin-top: 2px;
+	width: 250px;
 	background-color: #415EA9;
 	border: none;
 	font-size: 14px;
@@ -31,5 +35,6 @@ button{
 }
 
 button:hover{
-	background-color: #CB356B;
+	background-color: whitesmoke;
+	color: blue;
 }
