@@ -5,29 +5,29 @@
 
 အဓိပ္ပါယ်သတ်မှတ်ချက်
 ~~~~~~~~~~~~~~~~
-12/UKaMa(C)******
+12/UKaMa(𝐂)******
 နိုင်ငံသားသင်္ကေတ
-(C) : Citizenship
+(𝐂) : Citizenship
 
-12/UKaMa(AC)******
+12/UKaMa(𝐀𝐂)******
 ဧည့်နိုင်ငံသားသင်္ကေတ
-(AC) : Associate Citizenship
+(𝐀𝐂) : Associate Citizenship
 
-12/UKaMa(NC)******
+12/UKaMa(𝐍𝐂)******
 နိုင်ငံသားပြုခွင့်ရသူသင်္ကေတ
-(NC) : Naturalized Citizenship
+(𝐍𝐂) : Naturalized Citizenship
 
-12/UKaMa(V)******
+12/UKaMa(𝐕)******
 နိုင်ငံသားစိစစ်မည့်သူသင်္ကေတ
-(V) : Verification
+(𝐕) : Verification
 
-12/UKaMa(M)******
+12/UKaMa(𝐌)******
 သာသနာဝင်သင်္ကေတ
-(M) : Monk
+(𝐌) : Monk
 
-12/UKaMa(N)******
+12/UKaMa(𝐍)******
 သာသနာနွယ်ဝင်သင်္ကေတ
-(N) : Nun
+(𝐍) : Nun
 ================
 အမှားတစုံတရာတွေ့လို့သော်လည်းကောင်း၊ ဝေဖန်အကြံပြုလိုသော်လည်းကောင်း ဆက်သွယ်အကြံပြုလို ပါက
 Facebook : Win Min Htet
