@@ -1,11 +1,11 @@
 {
-    "name": "pyin_nay_b_lar",
-    "short_name": "pyin_nay_b_lar",
+    "name": "PyinNayBeLar",
+    "short_name": "PNBL",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "PyinNayBeLar: Random Activity Generator",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
