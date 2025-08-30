@@ -1,0 +1,628 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base styles and reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --accent-color: #00ff9d;
+            --secondary-color: #0077ff;
+            --dark-panel: #1a1a1a;
+            --code-bg: #1e1e1e;
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 157, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 119, 255, 0.1) 0%, transparent 20%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header styles */
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 0;
+            position: relative;
+        }
+        
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+        
+        .profile-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.5);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+        .title {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+        
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .nav-item {
+            margin: 0 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: var(--transition);
+        }
+        
+        .nav-item:hover {
+            color: var(--accent-color);
+        }
+        
+        .nav-item:hover::after {
+            width: 100%;
+        }
+        
+        /* Main content */
+        .content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .content {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+        
+        .main-section {
+            background-color: var(--dark-panel);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .sidebar {
+            background-color: var(--dark-panel);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            align-self: start;
+        }
+        
+        h2 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        h2 i {
+            margin-right: 10px;
+        }
+        
+        /* About section */
+        .about p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .highlight {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        /* Skills */
+        .skills-list {
+            list-style: none;
+        }
+        
+        .skill-item {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .skill-bar {
+            height: 8px;
+            background-color: var(--code-bg);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background-color: var(--accent-color);
+            border-radius: 4px;
+            transition: width 1.5s ease;
+        }
+        
+        /* Projects */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .project-card {
+            background-color: var(--code-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent-color);
+        }
+        
+        .project-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .project-content {
+            padding: 15px;
+        }
+        
+        .project-title {
+            color: var(--text-color);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .project-description {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .tag {
+            background-color: rgba(0, 255, 157, 0.1);
+            color: var(--accent-color);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        /* Contact */
+        .contact-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .contact-item:hover {
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+        
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0, 255, 157, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 15px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--dark-panel);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-link:hover {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            transform: translateY(-3px);
+        }
+        
+        /* Animation for skill bars */
+        .animate-skills .skill-progress[data-skill="90%"] {
+            width: 90%;
+        }
+        
+        .animate-skills .skill-progress[data-skill="85%"] {
+            width: 85%;
+        }
+        
+        .animate-skills .skill-progress[data-skill="80%"] {
+            width: 80%;
+        }
+        
+        .animate-skills .skill-progress[data-skill="75%"] {
+            width: 75%;
+        }
+        
+        .animate-skills .skill-progress[data-skill="70%"] {
+            width: 70%;
+        }
+        
+        /* Cursor effect */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: rgba(0, 255, 157, 0.5);
+            position: fixed;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+        
+        .cursor-follower {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(0, 255, 157, 0.2);
+            position: fixed;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9998;
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    
+    <div class="container">
+        <header>
+            <div class="profile-container">
+                <img src="https://avatars.githubusercontent.com/u/69183463?v=4" alt="Profile Image" class="profile-img">
+                <h1>Win Min Htet</h1>
+                <p class="title">Flutter Developer</p>
+            </div>
+        </header>
+        
+        <nav>
+            <a href="#about" class="nav-item"><i class="fas fa-user"></i> About</a>
+            <a href="#skills" class="nav-item"><i class="fas fa-code"></i> Skills</a>
+            <a href="#projects" class="nav-item"><i class="fas fa-project-diagram"></i> Projects</a>
+            <a href="#contact" class="nav-item"><i class="fas fa-envelope"></i> Contact</a>
+        </nav>
+        
+        <div class="content">
+            <main class="main-section">
+                <section id="about">
+                    <h2><i class="fas fa-user"></i> About Me</h2>
+                    <div class="about">
+                        <p>Hello! I'm <span class="highlight">Win Min Htet</span>, a passionate Flutter Developer with over 2 years of experience building beautiful, high-performance mobile applications.</p>
+                        <p>I specialize in creating <span class="highlight">cross-platform apps</span> that deliver smooth user experiences on both iOS and Android. My approach combines clean architecture, efficient state management, and modern UI design principles.</p>
+                        <p>When I'm not coding, you'll find me exploring new Flutter packages, learning about mobile app architecture, or working on personal projects to sharpen my skills and push the boundaries of what Flutter can do.</p>
+                    </div>
+                </section>
+                
+                <section id="skills">
+                    <h2><i class="fas fa-code"></i> Skills</h2>
+                    <div class="skills-list">
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span>Flutter & Dart</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-skill="90%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span>State Management</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-skill="85%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span>Firebase Integration</span>
+                                <span>80%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-skill="80%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span>API Integration</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-skill="75%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span>Clean Architecture</span>
+                                <span>70%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-skill="70%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="projects">
+                    <h2><i class="fas fa-project-diagram"></i> Featured Projects</h2>
+                    <div class="projects-grid">
+                        <div class="project-card">
+                            <img src="https://github.com/winminhtetz/chordify_lyrics/raw/main/screenshots/preview.png" alt="Chordify Lyrics" class="project-img">
+                            <div class="project-content">
+                                <h3 class="project-title">chordify_lyrics</h3>
+                                <p class="project-description">A Flutter package to beautifully render and transpose chorded lyrics with ease — perfect for music apps, karaoke, or chord sheets. The package automatically aligns chords above lyrics and supports real-time transposition. <a href="https://pub.dev/packages/chordify_lyrics" style="color: green;">Visit chordify_lyrics Package</a></p>
+                                <div class="project-tags">
+                                    <span class="tag">Flutter</span>
+                                    <span class="tag">Dart Package</span>
+                                    <span class="tag">Music</span>
+                                    <span class="tag">Open Source</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-card">
+                            <img src="https://camo.githubusercontent.com/962123441a6e23af0a4d599f829024909ad41bc658772bfd275ebce24d146a52/68747470733a2f2f77696e6d696e687465747a2e6769746875622e696f2f696d675f66696c652f707265766965772e706e67" alt="Cupertino Icons Finder For Flutter Project" class="project-img">
+                            <div class="project-content">
+                                <h3 class="project-title">Cupertino Icons Finder</h3>
+                                <p class="project-description">Find and Favorite Cupertino icons for your Flutter project easily. Copy icon names for quick integration into your projects.
+
+<a href="https://cupertino-icons-finder.pages.dev" style="color: green;">Visit Cupertino Icons Finder</a>
+
+</p>
+                                <div class="project-tags">
+                                    <span class="tag">Flutter</span>
+                                    <span class="tag">Dart</span>
+                                    <span class="tag">Package Development</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                       
+                    </div>
+                </section>
+            </main>
+            
+            <aside class="sidebar">
+                <section id="contact">
+                    <h2><i class="fas fa-envelope"></i> Contact</h2>
+                    <div class="contact-methods">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <p>mgwinnminnhtet111@gmail.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <p>Yangon, Myanmar</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div>
+                                <p>github.com/winminhtetz</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section>
+                    <h2><i class="fas fa-award"></i> Stats</h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div style="background: var(--code-bg); padding: 15px; border-radius: var(--border-radius); text-align: center;">
+                            <div style="font-size: 1.8rem; color: var(--accent-color); font-weight: bold;">15+</div>
+                            <div>Projects</div>
+                        </div>
+                        <div style="background: var(--code-bg); padding: 15px; border-radius: var(--border-radius); text-align: center;">
+                            <div style="font-size: 1.8rem; color: var(--secondary-color); font-weight: bold;">2 yrs</div>
+                            <div>Experience</div>
+                        </div>
+                        <div style="background: var(--code-bg); padding: 15px; border-radius: var(--border-radius); text-align: center;">
+                            <div style="font-size: 1.8rem; color: var(--accent-color); font-weight: bold;">5+</div>
+                            <div>Clients</div>
+                        </div>
+                        <div style="background: var(--code-bg); padding: 15px; border-radius: var(--border-radius); text-align: center;">
+                            <div style="font-size: 1.8rem; color: var(--secondary-color); font-weight: bold;">3</div>
+                            <div>Awards</div>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+        </div>
+        
+        <footer>
+            <div class="social-links">
+                <a href="https://github.com/winminhtet" class="social-link"><i class="fab fa-github"></i></a>
+              
+            </div>
+            <p>© 2025 Win Min Htet. Crafted with <span style="color: var(--accent-color);">♥</span> for code and creativity.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Custom cursor effect
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+            }, 100);
+        });
+        
+        // Animate skill bars when they come into view
+        const skillsSection = document.querySelector('#skills');
+        const options = {
+            threshold: 0.5
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-skills');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, options);
+        
+        observer.observe(skillsSection);
+        
+        // Navigation scroll effect
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
