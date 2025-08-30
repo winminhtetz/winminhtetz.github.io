@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,6 +97,7 @@
             justify-content: center;
             margin: 30px 0;
             flex-wrap: wrap;
+            gap: 10px;
         }
         
         .nav-item {
@@ -107,6 +108,7 @@
             border-radius: var(--border-radius);
             transition: var(--transition);
             position: relative;
+            font-size: 0.9rem;
         }
         
         .nav-item::after {
@@ -164,6 +166,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
+            font-size: 1.5rem;
         }
         
         h2 i {
@@ -174,6 +177,7 @@
         .about p {
             margin-bottom: 15px;
             text-align: justify;
+            font-size: 1rem;
         }
         
         .highlight {
@@ -196,6 +200,7 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 5px;
+            font-size: 0.9rem;
         }
         
         .skill-bar {
@@ -258,6 +263,7 @@
         .project-description {
             margin-bottom: 15px;
             font-size: 0.95rem;
+            line-height: 1.5;
         }
         
         .project-tags {
@@ -374,6 +380,7 @@
             transform: translate(-50%, -50%);
             z-index: 9999;
             transition: transform 0.1s ease;
+            display: none;
         }
         
         .cursor-follower {
@@ -386,11 +393,202 @@
             transform: translate(-50%, -50%);
             z-index: 9998;
             transition: transform 0.3s ease;
+            display: none;
+        }
+        
+        /* Mobile-specific styles */
+        @media (max-width: 767px) {
+            .container {
+                padding: 15px;
+            }
+            
+            header {
+                padding: 20px 0;
+            }
+            
+            .profile-img {
+                width: 120px;
+                height: 120px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .title {
+                font-size: 1rem;
+            }
+            
+            .main-section, .sidebar {
+                padding: 20px;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            .about p {
+                font-size: 0.95rem;
+            }
+            
+            .project-img {
+                height: 120px;
+            }
+            
+            .project-description {
+                font-size: 0.9rem;
+            }
+            
+            .contact-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+            }
+            
+            .contact-item {
+                gap: 10px;
+            }
+            
+            .contact-item p {
+                font-size: 0.95rem;
+            }
+            
+            footer {
+                font-size: 0.8rem;
+                padding: 15px;
+            }
+            
+            .social-link {
+                width: 35px;
+                height: 35px;
+            }
+        }
+        
+        /* Tablet styles */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .container {
+                padding: 25px;
+            }
+            
+            .profile-img {
+                width: 130px;
+                height: 130px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .main-section, .sidebar {
+                padding: 25px;
+            }
+            
+            .project-img {
+                height: 130px;
+            }
+        }
+        
+        /* Larger screens */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1200px;
+            }
+            
+            .content {
+                gap: 40px;
+            }
+            
+            .main-section, .sidebar {
+                padding: 35px;
+            }
+            
+            h2 {
+                font-size: 1.6rem;
+            }
+        }
+        
+        /* Adjustments for very small screens */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .profile-img {
+                width: 100px;
+                height: 100px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            nav {
+                margin: 20px 0;
+            }
+            
+            .nav-item {
+                margin: 0 8px;
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .main-section, .sidebar {
+                padding: 15px;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
+            }
+            
+            .about p {
+                font-size: 0.9rem;
+            }
+            
+            .skill-info {
+                font-size: 0.8rem;
+            }
+            
+            .project-img {
+                height: 100px;
+            }
+            
+            .project-title {
+                font-size: 1.1rem;
+            }
+            
+            .project-description {
+                font-size: 0.85rem;
+            }
+            
+            .tag {
+                font-size: 0.7rem;
+                padding: 2px 6px;
+            }
+            
+            .contact-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+            
+            footer {
+                font-size: 0.75rem;
+                padding: 10px;
+            }
+            
+            .social-link {
+                width: 30px;
+                height: 30px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Custom cursor -->
+    <!-- Custom cursor - hidden on mobile devices -->
     <div class="cursor"></div>
     <div class="cursor-follower"></div>
     
@@ -421,7 +619,7 @@
                     </div>
                 </section>
                 
-                <section id="skills">
+                <section id="skills" class="animate-skills">
                     <h2><i class="fas fa-code"></i> Skills</h2>
                     <div class="skills-list">
                         <div class="skill-item">
@@ -493,11 +691,7 @@
                             <img src="https://camo.githubusercontent.com/962123441a6e23af0a4d599f829024909ad41bc658772bfd275ebce24d146a52/68747470733a2f2f77696e6d696e687465747a2e6769746875622e696f2f696d675f66696c652f707265766965772e706e67" alt="Cupertino Icons Finder For Flutter Project" class="project-img">
                             <div class="project-content">
                                 <h3 class="project-title">Cupertino Icons Finder</h3>
-                                <p class="project-description">Find and Favorite Cupertino icons for your Flutter project easily. Copy icon names for quick integration into your projects.
-
-<a href="https://cupertino-icons-finder.pages.dev" style="color: green;">Visit Cupertino Icons Finder</a>
-
-</p>
+                                <p class="project-description">Find and Favorite Cupertino icons for your Flutter project easily. Copy icon names for quick integration into your projects. <a href="https://cupertino-icons-finder.pages.dev" style="color: green;">Visit Cupertino Icons Finder</a></p>
                                 <div class="project-tags">
                                     <span class="tag">Flutter</span>
                                     <span class="tag">Dart</span>
@@ -505,9 +699,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        
-                       
                     </div>
                 </section>
             </main>
@@ -571,58 +762,107 @@
         <footer>
             <div class="social-links">
                 <a href="https://github.com/winminhtet" class="social-link"><i class="fab fa-github"></i></a>
-              
             </div>
             <p>© 2025 Win Min Htet. Crafted with <span style="color: var(--accent-color);">♥</span> for code and creativity.</p>
         </footer>
     </div>
 
     <script>
-        // Custom cursor effect
-        const cursor = document.querySelector('.cursor');
-        const cursorFollower = document.querySelector('.cursor-follower');
+        // Disable custom cursor on mobile devices
+        function checkDevice() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (isMobile) {
+                document.querySelector('.cursor').style.display = 'none';
+                document.querySelector('.cursor-follower').style.display = 'none';
+            } else {
+                document.querySelector('.cursor').style.display = 'block';
+                document.querySelector('.cursor-follower').style.display = 'block';
+            }
+        }
         
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+        // Custom cursor effect (only on non-mobile devices)
+        function setupCursor() {
+            const cursor = document.querySelector('.cursor');
+            const cursorFollower = document.querySelector('.cursor-follower');
             
-            setTimeout(() => {
-                cursorFollower.style.left = e.clientX + 'px';
-                cursorFollower.style.top = e.clientY + 'px';
-            }, 100);
-        });
-        
-        // Animate skill bars when they come into view
-        const skillsSection = document.querySelector('#skills');
-        const options = {
-            threshold: 0.5
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-skills');
-                    observer.unobserve(entry.target);
+            document.addEventListener('mousemove', (e) => {
+                if (cursor.style.display !== 'none') {
+                    cursor.style.left = e.clientX + 'px';
+                    cursor.style.top = e.clientY + 'px';
+                    
+                    setTimeout(() => {
+                        cursorFollower.style.left = e.clientX + 'px';
+                        cursorFollower.style.top = e.clientY + 'px';
+                    }, 100);
                 }
             });
-        }, options);
+            
+            // Hide cursor when leaving window
+            document.addEventListener('mouseleave', () => {
+                cursor.style.display = 'none';
+                cursorFollower.style.display = 'none';
+            });
+            
+            document.addEventListener('mouseenter', () => {
+                if (window.innerWidth > 768) {
+                    cursor.style.display = 'block';
+                    cursorFollower.style.display = 'block';
+                }
+            });
+        }
         
-        observer.observe(skillsSection);
+        // Animate skill bars when they come into view
+        function setupSkillAnimation() {
+            const skillsSection = document.querySelector('#skills');
+            const options = {
+                threshold: 0.5
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-skills');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, options);
+            
+            observer.observe(skillsSection);
+        }
         
         // Navigation scroll effect
-        document.querySelectorAll('nav a').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80,
-                    behavior: 'smooth'
+        function setupNavigation() {
+            document.querySelectorAll('nav a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
                 });
             });
+        }
+        
+        // Initialize all functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            checkDevice();
+            setupCursor();
+            setupSkillAnimation();
+            setupNavigation();
+            
+            // Handle window resize
+            window.addEventListener('resize', checkDevice);
         });
+        
+        // Smooth scrolling for all browsers
+        if ('scrollBehavior' in document.documentElement.style) {
+            document.documentElement.style.scrollBehavior = 'smooth';
+        }
     </script>
 </body>
 </html>
+```
