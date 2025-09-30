@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natal Chart Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #ff8a00, #da1b60);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            font-size: 1.2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #2c3e50, #4a235a);
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            animation: modalAppear 0.4s ease-out;
+            overflow-y: auto;
+        }
+        
+        @keyframes modalAppear {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.8rem;
+            color: #fff;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-header h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .modal-body {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            white-space: pre-wrap;
+            text-align: justify;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #fff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-star"></i> Natal Chart Calculator</h1>
+            <p class="subtitle">Discover your cosmic blueprint by entering your birth details</p>
+        </header>
+        
+        <main>
+            <div class="card">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" placeholder="Enter your name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date">Birth Date</label>
+                        <input type="date" id="date">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="time">Birth Time</label>
+                        <input type="time" id="time" value="12:00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location">Birth Location</label>
+                        <input type="text" id="location" placeholder="City, Country" value="Yangon, Myanmar">
+                    </div>
+                </div>
+                
+                <button id="calculateBtn" class="btn">
+                    <i class="fas fa-magic"></i> Calculate Natal Chart
+                </button>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Calculating your cosmic blueprint... (This may take 10-20 seconds)</p>
+            </div>
+        </main>
+        
+        <!-- Modal Dialog -->
+        <div id="resultModal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" id="closeModal">&times;</button>
+                <div class="modal-header">
+                    <h2><i class="fas fa-chart-pie"></i> Your Natal Chart Analysis</h2>
+                    <p>Expert Astrologer Interpretation</p>
+                </div>
+                <div class="modal-body" id="modalContent">
+                    <!-- API response will appear here -->
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 Natal Chart Calculator | For entertainment purposes only</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculateBtn');
+            const loading = document.getElementById('loading');
+            const modal = document.getElementById('resultModal');
+            const closeModal = document.getElementById('closeModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            calculateBtn.addEventListener('click', async function() {
+                const name = document.getElementById('name').value.trim();
+                const dateInput = document.getElementById('date').value;
+                const timeInput = document.getElementById('time').value;
+                const location = document.getElementById('location').value.trim();
+                
+                // Validate inputs
+                if (!name || !dateInput || !location) {
+                    alert('Please fill in all required fields (Name, Birth Date, and Location)');
+                    return;
+                }
+                
+                // Format date to "DD Month, YYYY"
+                const date = new Date(dateInput);
+                const months = [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+                const day = date.getDate();
+                const month = months[date.getMonth()];
+                const year = date.getFullYear();
+                const formattedDate = `${day} ${month}, ${year}`;
+                
+                // Get day of week
+                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const dayOfWeek = days[date.getDay()];
+                
+                // Format time
+                const timeParts = timeInput.split(':');
+                const hour = parseInt(timeParts[0]);
+                const minute = timeParts[1];
+                const period = hour >= 12 ? 'PM' : 'AM';
+                const displayHour = hour % 12 || 12;
+                const formattedTime = `${displayHour}:${minute} ${period}`;
+                
+                // Construct the message
+                const message = `Assume you are an expert astrologer. I will give you a person’s birth information (${formattedDate}, ${dayOfWeek}, ${formattedTime}, ${location}). Based on this data, calculate the natal chart and generate the result. Your response must be written in Burmese language and should include:\n\n1. General Life Overview – overall personality, strengths, weaknesses.\n2. Love & Relationships – approach to love, marriage, compatibility.\n3. Wealth & Finances – potential for financial stability, savings, income flow.\n4. Career & Business – suitable career paths, business potential, leadership skills.\n5. Health & Wellbeing – physical and mental health tendencies.\n6. Spiritual Growth – inner wisdom, meditation, karmic lessons.\n7. Future Outlook – major opportunities and challenges.\n\nThe tone should be warm, insightful, and easy for a general Burmese reader to understand. Avoid technical jargon unless necessary, and always explain planetary effects in simple Burmese terms.`;
+                
+                // Show loading
+                loading.style.display = 'block';
+                calculateBtn.disabled = true;
+                
+                try {
+                    const response = await fetch('https://natal-chat-api.vercel.app/api/send', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    const apiResponse = data.response || data.message || 'No response received from API';
+                    
+                    // Display in modal
+                    modalContent.textContent = apiResponse;
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                } catch (error) {
+                    console.error('Error:', error);
+                    modalContent.textContent = 'ဆက်သွယ်ရာတွင် ပြဿနာတစ်ခုခု ဖြစ်နေပါသည်။ ကျေးဇူးပြု၍ နောက်မှ ထပ်မံကြိုးစားပေးပါ။\n\n(Error: ' + error.message + ')';
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                } finally {
+                    loading.style.display = 'none';
+                    calculateBtn.disabled = false;
+                }
+            });
+            
+            // Close modal when clicking close button
+            closeModal.addEventListener('click', function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Close modal when clicking outside the content
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').setAttribute('max', today);
+            document.getElementById('date').value = today;
+        });
+    </script>
+</body>
+</html>
