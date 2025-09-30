@@ -359,7 +359,7 @@
                     }
                     
                     const data = await response.json();
-                    const apiResponse = data.response || data.message || 'No response received from API';
+                    const apiResponse = data.response || data.message || data || 'No response received from API';
                     
                     // Display in modal
                     modalContent.textContent = apiResponse;
