@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terms of Service - OurCloud</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            max-width: 800px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Terms of Service</h1>
+<p><strong>Effective Date:</strong> November 25, 2025</p>
+
+<p>Welcome to OurCloud (“the App”). By using the App, you agree to the following Terms of Service. If you do not agree, please discontinue using the App.</p>
+
+<hr>
+
+<h2>1. Description of Service</h2>
+<p>OurCloud is a mobile application that allows users to upload photos and files to their own Google Drive and optionally share them with their partner or trusted individuals. The App uses the Google Drive API with the <strong>drive.file</strong> scope, allowing access only to files created or managed by the App.</p>
+
+<hr>
+
+<h2>2. Google Account & Permissions</h2>
+<p>To use OurCloud, you must sign in with your Google account. By signing in, you grant the App permission to:</p>
+<ul>
+    <li>Access basic Google profile information</li>
+    <li>Create, view, and manage files and folders stored in your Google Drive (limited to files created by the App)</li>
+</ul>
+
+<p>The App cannot access any other files in your Google Drive outside of its own directory.</p>
+
+<hr>
+
+<h2>3. User Responsibilities</h2>
+<ul>
+    <li>You are responsible for all content you upload through the App.</li>
+    <li>You must ensure you have permission to upload and share any files.</li>
+    <li>You agree not to upload illegal, harmful, abusive, or copyrighted content without authorization.</li>
+    <li>You are responsible for managing your Google Drive storage and sharing settings.</li>
+</ul>
+
+<hr>
+
+<h2>4. File Storage</h2>
+<p>All files uploaded through the App are stored directly in <strong>your Google Drive</strong>. We do not store, process, or back up any of your files on external servers.</p>
+
+<p>Deleting the App does not remove your files from Google Drive — you must delete them manually if you choose.</p>
+
+<hr>
+
+<h2>5. Sharing With Others</h2>
+<p>If you choose to share your Google Drive folder with another user, they will have access to the files you allow through Google Drive’s sharing permissions. The App does not control what others do with shared files.</p>
+
+<hr>
+
+<h2>6. Prohibited Activities</h2>
+<p>You agree NOT to:</p>
+<ul>
+    <li>Use the App for illegal or harmful activities</li>
+    <li>Attempt to access other users’ data</li>
+    <li>Reverse engineer or modify the App</li>
+    <li>Use the App to distribute malware, spam, or harmful content</li>
+</ul>
+
+<hr>
+
+<h2>7. Data & Privacy</h2>
+<p>Your privacy is extremely important to us. Please review our <a href="#" target="_blank">Privacy Policy</a> to understand how your data is handled.</p>
+
+<hr>
+
+<h2>8. Service Availability</h2>
+<p>The App relies on third-party services, primarily Google Drive and Google Sign-In. We cannot guarantee uninterrupted access, as disruptions may occur due to Google API outages, quota limits, or other technical issues.</p>
+
+<hr>
+
+<h2>9. Disclaimer of Warranties</h2>
+<p>The App is provided “as is,” without warranties of any kind. We do not guarantee:</p>
+<ul>
+    <li>That the App will always function without errors</li>
+    <li>That uploaded files will never be lost (Google Drive handles storage reliability)</li>
+    <li>That third-party APIs will always remain available</li>
+</ul>
+
+<hr>
+
+<h2>10. Limitation of Liability</h2>
+<p>To the maximum extent permitted by law, we are not responsible for any:</p>
+<ul>
+    <li>Loss of data caused by Google Drive or user error</li>
+    <li>Unauthorized access due to misconfigured sharing settings</li>
+    <li>Damages resulting from the use or inability to use the App</li>
+</ul>
+
+<hr>
+
+<h2>11. Changes to These Terms</h2>
+<p>We may update these Terms of Service from time to time. Continued use of the App after updates means you accept the revised terms.</p>
+
+<hr>
+
+<h2>12. Contact Information</h2>
+<p>If you have any questions about these Terms, please contact:</p>
+<p><strong>Email:</strong> mgwinnminnhtet111@gmail.com</p>
+
+</body>
+</html>
