@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - MM Subber (Myanmar Subtitle Editor)</title>
+    <meta name="description" content="Privacy Policy for MM Subber (Myanmar Subtitle Editor) mobile application. Learn how we handle your data, permissions, and privacy.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #202124;
+            --card-bg: rgba(43, 45, 47, 0.88);
+            --card-border: rgba(255, 255, 255, 0.10);
+            --text-primary: #f5f7fa;
+            --text-secondary: #b8c0c8;
+            --text-muted: #8d969f;
+            --accent-color: #36b6d8;
+            --accent-gradient: linear-gradient(135deg, #176fc1 0%, #39b8d9 100%);
+            --accent-glow: rgba(48, 166, 211, 0.22);
+            --badge-bg: rgba(54, 182, 216, 0.10);
+            --badge-border: rgba(54, 182, 216, 0.30);
+            --header-bg: rgba(32, 33, 36, 0.88);
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-color: #f3f6f8;
+                --card-bg: #ffffff;
+                --card-border: #d9e1e7;
+                --text-primary: #18212a;
+                --text-secondary: #52616d;
+                --text-muted: #7d8a94;
+                --accent-color: #1683c4;
+                --accent-gradient: linear-gradient(135deg, #176fc1 0%, #39b8d9 100%);
+                --accent-glow: rgba(31, 139, 199, 0.12);
+                --badge-bg: rgba(31, 139, 199, 0.08);
+                --badge-border: rgba(31, 139, 199, 0.20);
+                --header-bg: rgba(243, 246, 248, 0.90);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.7;
+            padding-bottom: 60px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 18px 24px;
+        }
+
+        .header-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #202124;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .effective-date {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: var(--badge-bg);
+            border: 1px solid var(--badge-border);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 40px auto 0;
+            padding: 0 24px;
+        }
+
+        .hero-section {
+            margin-bottom: 36px;
+            text-align: left;
+        }
+
+        .hero-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 720px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(8px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--badge-bg);
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        p {
+            color: var(--text-secondary);
+            font-size: 0.98rem;
+            margin-bottom: 14px;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 12px;
+            margin-bottom: 14px;
+        }
+
+        li {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            font-size: 0.96rem;
+        }
+
+        li::before {
+            content: "•";
+            position: absolute;
+            left: 8px;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        li strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: var(--badge-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 16px 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 16px 0;
+        }
+
+        .highlight-box p {
+            color: var(--text-primary);
+            font-weight: 500;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .footer {
+            max-width: 900px;
+            margin: 40px auto 0;
+            padding: 24px 24px 0;
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+
+        .footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            .main-container {
+                padding: 0 16px;
+                margin-top: 24px;
+            }
+
+            .hero-title {
+                font-size: 1.75rem;
+            }
+
+            .card {
+                padding: 20px 20px;
+                border-radius: 14px;
+            }
+
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo-group">
+                <div class="logo-icon"><img src="https://i.ibb.co/MyYzJJWv/playstore-icon.png" alt="MM Subber icon"></div>
+                <span class="logo-text">MM Subber</span>
+            </a>
+            <span class="effective-date">Last Updated: August 9, 2026</span>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <section class="hero-section">
+            <h1 class="hero-title">Privacy Policy</h1>
+            <p class="hero-subtitle">
+                Welcome to MM Subber (Myanmar Subtitle Editor). We respect your privacy and are committed to protecting the information you process using our mobile application.
+            </p>
+        </section>
+
+        <!-- Overview -->
+        <article class="card">
+            <div class="card-header">
+                <div class="card-icon">1</div>
+                <h2>Overview & Data Ownership</h2>
+            </div>
+            <p>
+                <strong>MM Subber</strong> is a local-first mobile subtitle editing, translation, and management tool designed for Myanmar translators and creators.
+            </p>
+            <p>
+                We believe your content belongs to you. The application operates primarily offline on your device, processing subtitle files (`.srt`, `.vtt`), media previews, and dictionary entries locally.
+            </p>
+            <div class="highlight-box">
+                <p>🔒 <strong>Key Takeaway:</strong> We do not collect, harvest, store, or sell your personal information or the contents of your subtitle files on any centralized servers.</p>
+            </div>
+        </article>
+
+        <!-- Information We Collect -->
+        <article class="card">
+            <div class="card-header">
+                <div class="card-icon">2</div>
+                <h2>Information Handled by the App</h2>
+            </div>
+            <p>Here is a detailed breakdown of how data is handled within MM Subber:</p>
+            <ul>
+                <li>
+                    <strong>Local Subtitle & Media Files:</strong> When you open or edit a subtitle file (`.srt`, `.vtt`) or load a video for sync preview, the app processes these files entirely on your local device storage.
+                </li>
+                <li>
+                    <strong>App Preferences & Settings:</strong> Your customized preferences (such as app theme, font size, Burmese typography settings, and recent file locations) are saved locally on your device using encrypted/local storage key-value pairs.
+                </li>
+                <li>
+                    <strong>Translation Requests:</strong> When you manually use the online translation feature (English to Myanmar), text snippets of selected subtitle lines are sent via secure HTTPS to third-party translation API services. These text snippets contain no personal identifiers.
+                </li>
+                <li>
+                    <strong>Offline Dictionary:</strong> The built-in English to Myanmar dictionary uses a bundled local database on your device and requires no internet connection.
+                </li>
+            </ul>
+        </article>
+
+        <!-- Device Permissions -->
+        <article class="card">
+            <div class="card-header">
+                <div class="card-icon">3</div>
+                <h2>Device Permissions Required</h2>
+            </div>
+            <p>To provide full subtitle editing functionality, MM Subber requests the following device permissions:</p>
+            <ul>
+                <li>
+                    <strong>Storage / Media Files Access:</strong> Required to allow you to browse, import, edit, sync, and export subtitle files and media previews stored on your device.
+                </li>
+                <li>
+                    <strong>Internet Access:</strong> Required only for optional online subtitle lookup and fetching translation query results when you choose to use the online translation tools.
+                </li>
+            </ul>
+            <p>You can grant or revoke these permissions at any time through your device settings.</p>
+        </article>
+
+        <!-- Third-Party Services -->
+        <article class="card">
+            <div class="card-header">
+                <div class="card-icon">4</div>
+                <h2>Third-Party Services</h2>
+            </div>
+            <p>
+                MM Subber may interface with third-party web services strictly to fulfill user-requested features:
+            </p>
+            <ul>
+                <li>
+                    <strong>Translation APIs:</strong> Processing text translation queries (English ↔ Myanmar). These requests carry no user account details or personal metadata.
+                </li>
+                <li>
+                    <strong>Online Subtitle Providers:</strong> Fetching publicly available open subtitle files when explicitly searched by the user in the Subtitle Explorer section.
+                </li>
+            </ul>
+            <p>We do not use third-party tracking scripts, ad networks, or user behavioral profiling analytics.</p>
+        </article>
+
+        <!-- Data Security & Children's Privacy -->
+        <article class="card">
+            <div class="card-header">
+                <div class="card-icon">5</div>
+                <h2>Data Security & Children's Privacy</h2>
+            </div>
+            <p>
+                <strong>Security:</strong> Because your data and files remain locally on your mobile device, the security of your files relies on your device's built-in security controls.
+            </p>
+            <p>
+                <strong>Children's Privacy:</strong> MM Subber does not knowingly collect or solicit personal data from children under the age of 13. The app is a professional utility tool for translators and content creators of all ages.
+            </p>
+        </article>
+
+        <!-- Changes to Privacy Policy -->
+        <article class="card">
+            <div class="card-header">
+                <div class="card-icon">6</div>
+                <h2>Changes to This Policy</h2>
+            </div>
+            <p>
+                We may update our Privacy Policy from time to time to reflect app updates or regulatory requirements. Any changes will be posted on this page with an updated "Last Updated" date.
+            </p>
+        </article>
+
+        <!-- Contact Us -->
+        <article class="card">
+            <div class="card-header">
+                <div class="card-icon">7</div>
+                <h2>Contact Us</h2>
+            </div>
+            <p>
+                If you have any questions or feedback regarding this Privacy Policy or MM Subber, please reach out to us at:
+            </p>
+            <div class="highlight-box">
+                <p>📧 <strong>Email Support:</strong> <a href="mailto:waynemarsh3ll@gmail.com" style="color: var(--accent-color); text-decoration: none;">waynemarsh3ll@gmail.com</a></p>
+            </div>
+        </article>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 MM Subber. All rights reserved.</p>
+        <p>Myanmar Subtitle Editor for Mobile Devices</p>
+    </footer>
+
+</body>
+</html>
