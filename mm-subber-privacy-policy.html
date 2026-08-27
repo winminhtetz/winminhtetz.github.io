@@ -24,6 +24,7 @@
             --header-bg: rgba(32, 33, 36, 0.88);
         }
 
+        /* Automatically follows the device/browser light or dark theme. */
         @media (prefers-color-scheme: light) {
             :root {
                 --bg-color: #f3f6f8;
@@ -106,6 +107,37 @@
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.02em;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .language-select {
+            appearance: none;
+            -webkit-appearance: none;
+            border: 1px solid var(--badge-border);
+            background: var(--badge-bg);
+            color: var(--text-primary);
+            padding: 7px 30px 7px 11px;
+            border-radius: 20px;
+            font: inherit;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            background-image: linear-gradient(45deg, transparent 50%, var(--accent-color) 50%),
+                              linear-gradient(135deg, var(--accent-color) 50%, transparent 50%);
+            background-position: calc(100% - 14px) 10px, calc(100% - 10px) 10px;
+            background-size: 4px 4px, 4px 4px;
+            background-repeat: no-repeat;
+        }
+
+        .language-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
         .effective-date {
@@ -278,6 +310,11 @@
                 border-radius: 14px;
             }
 
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
             .header-container {
                 flex-direction: column;
                 align-items: flex-start;
@@ -300,14 +337,20 @@
                 <div class="logo-icon"><img src="https://i.ibb.co/MyYzJJWv/playstore-icon.png" alt="MM Subber icon"></div>
                 <span class="logo-text">MM Subber</span>
             </a>
-            <span class="effective-date">Last Updated: August 9, 2026</span>
+            <div class="header-actions">
+                <select id="languageSelect" class="language-select" aria-label="Select language">
+                    <option value="en">English</option>
+                    <option value="my">မြန်မာ</option>
+                </select>
+                <span class="effective-date" data-i18n="lastUpdated">Last Updated: August 9, 2026</span>
+            </div>
         </div>
     </header>
 
     <main class="main-container">
         <section class="hero-section">
-            <h1 class="hero-title">Privacy Policy</h1>
-            <p class="hero-subtitle">
+            <h1 class="hero-title" data-i18n="privacyPolicy">Privacy Policy</h1>
+            <p class="hero-subtitle" data-i18n="heroSubtitle">
                 Welcome to MM Subber (Myanmar Subtitle Editor). We respect your privacy and are committed to protecting the information you process using our mobile application.
             </p>
         </section>
@@ -316,7 +359,7 @@
         <article class="card">
             <div class="card-header">
                 <div class="card-icon">1</div>
-                <h2>Overview & Data Ownership</h2>
+                <h2 data-i18n="overviewTitle">Overview & Data Ownership</h2>
             </div>
             <p>
                 <strong>MM Subber</strong> is a local-first mobile subtitle editing, translation, and management tool designed for Myanmar translators and creators.
@@ -333,21 +376,21 @@
         <article class="card">
             <div class="card-header">
                 <div class="card-icon">2</div>
-                <h2>Information Handled by the App</h2>
+                <h2 data-i18n="informationTitle">Information Handled by the App</h2>
             </div>
-            <p>Here is a detailed breakdown of how data is handled within MM Subber:</p>
+            <p data-i18n="informationIntro">Here is a detailed breakdown of how data is handled within MM Subber:</p>
             <ul>
                 <li>
-                    <strong>Local Subtitle & Media Files:</strong> When you open or edit a subtitle file (`.srt`, `.vtt`) or load a video for sync preview, the app processes these files entirely on your local device storage.
+                    <strong data-i18n="localFiles">Local Subtitle & Media Files:</strong> When you open or edit a subtitle file (`.srt`, `.vtt`) or load a video for sync preview, the app processes these files entirely on your local device storage.
                 </li>
                 <li>
-                    <strong>App Preferences & Settings:</strong> Your customized preferences (such as app theme, font size, Burmese typography settings, and recent file locations) are saved locally on your device using encrypted/local storage key-value pairs.
+                    <strong data-i18n="preferences">App Preferences & Settings:</strong> Your customized preferences (such as app theme, font size, Burmese typography settings, and recent file locations) are saved locally on your device using encrypted/local storage key-value pairs.
                 </li>
                 <li>
-                    <strong>Translation Requests:</strong> When you manually use the online translation feature (English to Myanmar), text snippets of selected subtitle lines are sent via secure HTTPS to third-party translation API services. These text snippets contain no personal identifiers.
+                    <strong data-i18n="translationRequests">Translation Requests:</strong> When you manually use the online translation feature (English to Myanmar), text snippets of selected subtitle lines are sent via secure HTTPS to third-party translation API services. These text snippets contain no personal identifiers.
                 </li>
                 <li>
-                    <strong>Offline Dictionary:</strong> The built-in English to Myanmar dictionary uses a bundled local database on your device and requires no internet connection.
+                    <strong data-i18n="offlineDictionary">Offline Dictionary:</strong> The built-in English to Myanmar dictionary uses a bundled local database on your device and requires no internet connection.
                 </li>
             </ul>
         </article>
@@ -356,51 +399,51 @@
         <article class="card">
             <div class="card-header">
                 <div class="card-icon">3</div>
-                <h2>Device Permissions Required</h2>
+                <h2 data-i18n="permissionsTitle">Device Permissions Required</h2>
             </div>
-            <p>To provide full subtitle editing functionality, MM Subber requests the following device permissions:</p>
+            <p data-i18n="permissionsIntro">To provide full subtitle editing functionality, MM Subber requests the following device permissions:</p>
             <ul>
                 <li>
-                    <strong>Storage / Media Files Access:</strong> Required to allow you to browse, import, edit, sync, and export subtitle files and media previews stored on your device.
+                    <strong data-i18n="storagePermission">Storage / Media Files Access:</strong> Required to allow you to browse, import, edit, sync, and export subtitle files and media previews stored on your device.
                 </li>
                 <li>
-                    <strong>Internet Access:</strong> Required only for optional online subtitle lookup and fetching translation query results when you choose to use the online translation tools.
+                    <strong data-i18n="internetPermission">Internet Access:</strong> Required only for optional online subtitle lookup and fetching translation query results when you choose to use the online translation tools.
                 </li>
             </ul>
-            <p>You can grant or revoke these permissions at any time through your device settings.</p>
+            <p data-i18n="permissionsOutro">You can grant or revoke these permissions at any time through your device settings.</p>
         </article>
 
         <!-- Third-Party Services -->
         <article class="card">
             <div class="card-header">
                 <div class="card-icon">4</div>
-                <h2>Third-Party Services</h2>
+                <h2 data-i18n="thirdPartyTitle">Third-Party Services</h2>
             </div>
             <p>
                 MM Subber may interface with third-party web services strictly to fulfill user-requested features:
             </p>
             <ul>
                 <li>
-                    <strong>Translation APIs:</strong> Processing text translation queries (English ↔ Myanmar). These requests carry no user account details or personal metadata.
+                    <strong data-i18n="translationApis">Translation APIs:</strong> Processing text translation queries (English ↔ Myanmar). These requests carry no user account details or personal metadata.
                 </li>
                 <li>
-                    <strong>Online Subtitle Providers:</strong> Fetching publicly available open subtitle files when explicitly searched by the user in the Subtitle Explorer section.
+                    <strong data-i18n="subtitleProviders">Online Subtitle Providers:</strong> Fetching publicly available open subtitle files when explicitly searched by the user in the Subtitle Explorer section.
                 </li>
             </ul>
-            <p>We do not use third-party tracking scripts, ad networks, or user behavioral profiling analytics.</p>
+            <p data-i18n="tracking">We do not use third-party tracking scripts, ad networks, or user behavioral profiling analytics.</p>
         </article>
 
         <!-- Data Security & Children's Privacy -->
         <article class="card">
             <div class="card-header">
                 <div class="card-icon">5</div>
-                <h2>Data Security & Children's Privacy</h2>
+                <h2 data-i18n="securityTitle">Data Security & Children's Privacy</h2>
             </div>
             <p>
-                <strong>Security:</strong> Because your data and files remain locally on your mobile device, the security of your files relies on your device's built-in security controls.
+                <strong data-i18n="securityLabel">Security:</strong> Because your data and files remain locally on your mobile device, the security of your files relies on your device's built-in security controls.
             </p>
             <p>
-                <strong>Children's Privacy:</strong> MM Subber does not knowingly collect or solicit personal data from children under the age of 13. The app is a professional utility tool for translators and content creators of all ages.
+                <strong data-i18n="childrenLabel">Children's Privacy:</strong> MM Subber does not knowingly collect or solicit personal data from children under the age of 13. The app is a professional utility tool for translators and content creators of all ages.
             </p>
         </article>
 
@@ -408,7 +451,7 @@
         <article class="card">
             <div class="card-header">
                 <div class="card-icon">6</div>
-                <h2>Changes to This Policy</h2>
+                <h2 data-i18n="changesTitle">Changes to This Policy</h2>
             </div>
             <p>
                 We may update our Privacy Policy from time to time to reflect app updates or regulatory requirements. Any changes will be posted on this page with an updated "Last Updated" date.
@@ -419,13 +462,13 @@
         <article class="card">
             <div class="card-header">
                 <div class="card-icon">7</div>
-                <h2>Contact Us</h2>
+                <h2 data-i18n="contactTitle">Contact Us</h2>
             </div>
             <p>
                 If you have any questions or feedback regarding this Privacy Policy or MM Subber, please reach out to us at:
             </p>
             <div class="highlight-box">
-                <p>📧 <strong>Email Support:</strong> <a href="mailto:waynemarsh3ll@gmail.com" style="color: var(--accent-color); text-decoration: none;">waynemarsh3ll@gmail.com</a></p>
+                <p>📧 <strong data-i18n="emailSupport">Email Support:</strong> <a href="mailto:waynemarsh3ll@gmail.com" style="color: var(--accent-color); text-decoration: none;">waynemarsh3ll@gmail.com</a></p>
             </div>
         </article>
     </main>
@@ -434,6 +477,92 @@
         <p>&copy; 2026 MM Subber. All rights reserved.</p>
         <p>Myanmar Subtitle Editor for Mobile Devices</p>
     </footer>
+
+
+<script>
+const translations = {
+    en: {
+        privacyPolicy: "Privacy Policy",
+        heroSubtitle: "Welcome to MM Subber (Myanmar Subtitle Editor). We respect your privacy and are committed to protecting the information you process using our mobile application.",
+        lastUpdated: "Last Updated: August 9, 2026",
+        overviewTitle: "Overview & Data Ownership",
+        informationTitle: "Information Handled by the App",
+        permissionsTitle: "Device Permissions Required",
+        thirdPartyTitle: "Third-Party Services",
+        securityTitle: "Data Security & Children's Privacy",
+        changesTitle: "Changes to This Policy",
+        contactTitle: "Contact Us",
+        informationIntro: "Here is a detailed breakdown of how data is handled within MM Subber:",
+        permissionsIntro: "To provide full subtitle editing functionality, MM Subber requests the following device permissions:",
+        thirdPartyIntro: "MM Subber may interface with third-party web services strictly to fulfill user-requested features:",
+        localFiles: "Local Subtitle & Media Files:",
+        preferences: "App Preferences & Settings:",
+        translationRequests: "Translation Requests:",
+        offlineDictionary: "Offline Dictionary:",
+        storagePermission: "Storage / Media Files Access:",
+        internetPermission: "Internet Access:",
+        translationApis: "Translation APIs:",
+        subtitleProviders: "Online Subtitle Providers:",
+        securityLabel: "Security:",
+        childrenLabel: "Children's Privacy:",
+        emailSupport: "Email Support:",
+        permissionsOutro: "You can grant or revoke these permissions at any time through your device settings.",
+        tracking: "We do not use third-party tracking scripts, ad networks, or user behavioral profiling analytics."
+    },
+    my: {
+        privacyPolicy: "ကိုယ်ရေးအချက်အလက် မူဝါဒ",
+        heroSubtitle: "MM Subber (Myanmar Subtitle Editor) မှ ကြိုဆိုပါသည်။ သင့်ကိုယ်ရေးအချက်အလက်များနှင့် အက်ပ်ကိုအသုံးပြု၍ လုပ်ဆောင်သော အချက်အလက်များကို လုံခြုံစွာကာကွယ်ရန် ကျွန်ုပ်တို့က အလေးထားပါသည်။",
+        lastUpdated: "နောက်ဆုံးပြင်ဆင်သည့်နေ့ — ၂၀၂၆ ခုနှစ် ဩဂုတ်လ ၉ ရက်",
+        overviewTitle: "အနှစ်ချုပ်နှင့် ဒေတာပိုင်ဆိုင်မှု",
+        informationTitle: "အက်ပ်မှ ကိုင်တွယ်သည့် အချက်အလက်များ",
+        permissionsTitle: "လိုအပ်သော စက်ပစ္စည်းခွင့်ပြုချက်များ",
+        thirdPartyTitle: "Third-Party ဝန်ဆောင်မှုများ",
+        securityTitle: "ဒေတာလုံခြုံရေးနှင့် ကလေးများ၏ ကိုယ်ရေးအချက်အလက်",
+        changesTitle: "ဤမူဝါဒ ပြောင်းလဲမှုများ",
+        contactTitle: "ဆက်သွယ်ရန်",
+        informationIntro: "MM Subber အတွင်း ဒေတာများကို မည်သို့ကိုင်တွယ်သည်ကို အောက်တွင် အသေးစိတ်ဖော်ပြထားပါသည်။",
+        permissionsIntro: "Subtitle တည်းဖြတ်မှုလုပ်ဆောင်ချက်များကို ပြည့်စုံစွာအသုံးပြုနိုင်ရန် MM Subber သည် အောက်ပါ စက်ပစ္စည်းခွင့်ပြုချက်များကို တောင်းခံပါသည်။",
+        thirdPartyIntro: "အသုံးပြုသူက တောင်းဆိုသော လုပ်ဆောင်ချက်များကို ဖြည့်ဆည်းရန်အတွက်သာ MM Subber သည် Third-Party ဝဘ်ဝန်ဆောင်မှုများနှင့် ချိတ်ဆက်အသုံးပြုနိုင်ပါသည်။",
+        localFiles: "Local Subtitle နှင့် Media ဖိုင်များ:",
+        preferences: "အက်ပ် Preferences နှင့် Settings:",
+        translationRequests: "ဘာသာပြန်တောင်းဆိုမှုများ:",
+        offlineDictionary: "Offline Dictionary:",
+        storagePermission: "Storage / Media ဖိုင်များ အသုံးပြုခွင့်:",
+        internetPermission: "Internet အသုံးပြုခွင့်:",
+        translationApis: "Translation API များ:",
+        subtitleProviders: "Online Subtitle Provider များ:",
+        securityLabel: "လုံခြုံရေး:",
+        childrenLabel: "ကလေးများ၏ ကိုယ်ရေးအချက်အလက်:",
+        emailSupport: "အီးမေးလ် Support:",
+        permissionsOutro: "ဤခွင့်ပြုချက်များကို သင့်စက်ပစ္စည်း၏ Settings မှတစ်ဆင့် အချိန်မရွေး ခွင့်ပြုနိုင်သလို ပြန်လည်ပိတ်နိုင်ပါသည်။",
+        tracking: "Third-Party Tracking Script များ၊ ကြော်ငြာ Network များ သို့မဟုတ် User Behavior Profiling Analytics များကို အသုံးမပြုပါ။"
+    }
+};
+
+function setLanguage(lang) {
+    const dict = translations[lang] || translations.en;
+    document.documentElement.lang = lang === "my" ? "my" : "en";
+
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.dataset.i18n;
+        if (dict[key] !== undefined) {
+            el.innerHTML = dict[key];
+        }
+    });
+
+    localStorage.setItem("mm-subber-language", lang);
+}
+
+const languageSelect = document.getElementById("languageSelect");
+const savedLanguage = localStorage.getItem("mm-subber-language") || "en";
+
+languageSelect.value = savedLanguage;
+setLanguage(savedLanguage);
+
+languageSelect.addEventListener("change", event => {
+    setLanguage(event.target.value);
+});
+</script>
 
 </body>
 </html>
