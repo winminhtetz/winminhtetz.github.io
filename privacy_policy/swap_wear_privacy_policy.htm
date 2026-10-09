@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy - Swapwear</title>
+    <style>
+        :root {
+            --primary: #111827;
+            --accent: #DB2777;
+            --bg: #ffffff;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+            color: var(--primary);
+            background: var(--bg);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+
+        header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+            font-size: 2.2rem;
+        }
+
+        header p {
+            margin: 4px 0;
+            color: var(--muted);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #fdf2f8;
+            color: var(--accent);
+            border: 1px solid #fbcfe8;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        h2 {
+            margin-top: 36px;
+            font-size: 1.35rem;
+            border-left: 4px solid var(--accent);
+            padding-left: 12px;
+        }
+
+        h3 {
+            margin-top: 20px;
+            font-size: 1.05rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 15px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px;
+            border: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        th {
+            background: #f9fafb;
+        }
+
+        a {
+            color: var(--accent);
+        }
+
+        .notice {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        footer {
+            margin-top: 48px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        @media(max-width:600px) {
+            header h1 {
+                font-size: 1.7rem;
+            }
+
+            table {
+                font-size: 13.5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="badge">Swapwear • com.app.swap_wear / com.app.swapWear</span>
+            <h1>Privacy Policy</h1>
+            <p><strong>Effective Date:</strong> October 9, 2026</p>
+            <p><strong>Last Updated:</strong> October 9, 2026 • Version 0.1.0</p>
+            <p>Swapwear ("we", "our", "us") operates the Swapwear mobile application - a pre-loved fashion marketplace
+                to buy, sell and swap clothing. This Privacy Policy explains what data we collect, why, and your rights.
+            </p>
+        </header>
+
+        <h2>1. Information We Collect</h2>
+        <h3>A. Account & Profile Information (you provide)</h3>
+        <ul>
+            <li>Name, email address, phone number, bio, address / township</li>
+            <li>Profile photo, product listing photos and videos</li>
+            <li>Seller verification: NRC front / back images, approval status</li>
+            <li>OAuth data if you sign in with Google: Google ID, display name, email, profile image</li>
+        </ul>
+        <h3>B. Transaction & Marketplace Activity</h3>
+        <ul>
+            <li>Listings, orders, order status, payment method, reward points, sell count, trust level, role
+                (buyer/seller)</li>
+            <li>Messages, reviews, reports, recent searches, language and theme preferences</li>
+            <li>Two-factor authentication data if enabled</li>
+        </ul>
+        <h3>C. Device & Usage Data (automatic)</h3>
+        <ul>
+            <li>Firebase FCM push token, notification interaction, crash / diagnostic logs, app performance</li>
+            <li>IP address, device model, OS version, app version, network state, locale (EN / Myanmar)</li>
+            <li>Cached images and local preferences stored on-device via GetStorage</li>
+        </ul>
+        <div class="notice"><strong>Sensitive ID Notice:</strong> We only request NRC images to verify sellers, prevent
+            fraud and build trust. NRC images are never shown publicly and are only visible to authorized reviewers. You
+            may request deletion after verification - see Section 9.</div>
+
+        <h2>2. How We Use Your Information</h2>
+        <ul>
+            <li>Create and manage accounts, authenticate via Firebase Auth</li>
+            <li>List, search, order, deliver and support second-hand transactions</li>
+            <li>Verify seller identity (NRC review), calculate trust level / rewards, prevent fraud</li>
+            <li>Send transactional and promotional push notifications via Firebase Cloud Messaging +
+                flutter_local_notifications</li>
+            <li>Remember theme, language, recent searches locally for better UX</li>
+            <li>Improve stability, security, analytics and customer support</li>
+            <li>Comply with legal obligations</li>
+        </ul>
+
+        <h2>3. Camera, Gallery, Files & Notifications Permissions</h2>
+        <table>
+            <tr>
+                <th>Permission</th>
+                <th>Why</th>
+                <th>Optional?</th>
+            </tr>
+            <tr>
+                <td>Camera / Gallery (image_picker, image_cropper)</td>
+                <td>Upload profile, NRC, product photos; crop/edit</td>
+                <td>Only when you use upload features. You can deny, but uploads won't work.</td>
+            </tr>
+            <tr>
+                <td>Storage / Media / Video Player</td>
+                <td>Display cached product images, play listing videos (cached_network_image, video_player)</td>
+                <td>Core functionality</td>
+            </tr>
+            <tr>
+                <td>POST_NOTIFICATIONS + INTERNET + ACCESS_NETWORK_STATE</td>
+                <td>Order updates, chat, promotions, API access</td>
+                <td>You can disable notifications in system settings.</td>
+            </tr>
+        </table>
+
+        <h2>4. Third-Party Services</h2>
+        <table>
+            <tr>
+                <th>Service</th>
+                <th>Use</th>
+                <th>Privacy Link</th>
+            </tr>
+            <tr>
+                <td>Firebase Auth, Firebase Core</td>
+                <td>Sign-in, session, security</td>
+                <td><a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></td>
+            </tr>
+            <tr>
+                <td>Firebase Cloud Messaging</td>
+                <td>Push notifications (high_importance_channel)</td>
+                <td><a href="https://firebase.google.com/support/privacy">Firebase Privacy</a></td>
+            </tr>
+            <tr>
+                <td>Google Sign-In</td>
+                <td>OAuth login</td>
+                <td><a href="https://policies.google.com/privacy">policies.google.com/privacy</a></td>
+            </tr>
+            <tr>
+                <td>Google Play / App Store</td>
+                <td>Distribution, crash reporting if enabled</td>
+                <td>Store policies apply</td>
+            </tr>
+            <tr>
+                <td>Backend API via Dio</td>
+                <td>Sync profile, listings, orders, payments</td>
+                <td>Covered by this policy</td>
+            </tr>
+        </table>
+        <p>These SDKs may collect device identifiers and usage data under their own policies. We do not sell your
+            personal data.</p>
+
+        <h2>5. Sharing of Information</h2>
+        <ul>
+            <li><strong>With other users:</strong> Only your public profile (name, photo, bio, listings, trust level,
+                sell count) and listing details. Your phone, email, address and NRC are never public - shared with
+                counterparty only after order confirmation for delivery.</li>
+            <li><strong>Service providers:</strong> Hosting, Firebase, notification delivery, strictly to operate the
+                app.</li>
+            <li><strong>Legal:</strong> If required by Myanmar law, court order, or to prevent fraud/abuse.</li>
+            <li><strong>Business transfer:</strong> If merged/acquired, users will be notified.</li>
+        </ul>
+
+        <h2>6. Local Storage & Cookies</h2>
+        <p>Swapwear is a mobile app and does not use web cookies. We store auth token, user profile, app settings,
+            recent searches on-device using GetStorage. Clearing app data / uninstalling removes local data. Cached
+            product images may remain until cache cleared.</p>
+
+        <h2>7. Data Retention</h2>
+        <ul>
+            <li>Account data retained while account is active + up to 2 years after for fraud, tax, dispute purposes.
+            </li>
+            <li>NRC images retained until verification + dispute period, then anonymized or deleted on request if law
+                permits.</li>
+            <li>Order logs retained up to 5 years where required for accounting.</li>
+            <li>Push tokens deleted on logout / uninstall.</li>
+        </ul>
+
+        <h2>8. Security</h2>
+        <p>We use HTTPS/TLS, Firebase secure auth, access controls and limited NRC access. No system is 100% secure -
+            please use strong passwords, enable 2FA, and do not share OTPs. Report abuse to support below.</p>
+
+        <h2>9. Your Rights - Access, Correction, Deletion</h2>
+        <ul>
+            <li>View/edit profile in-app: Profile &gt; Edit Profile, Settings &gt; Language / Theme</li>
+            <li>Request export, correction, or deletion of account + NRC images via email below</li>
+            <li>Withdraw consent for marketing notifications anytime in system settings</li>
+            <li>We respond within 30 days. Deletion removes listings, profile and verification images from active
+                systems; order records required by law may be anonymized.</li>
+        </ul>
+        <p>To delete account: In-app if available, or email <strong>support@swapwear.com</strong> with subject "Delete
+            My Account" from your registered email/phone.</p>
+
+        <h2>10. Children's Privacy</h2>
+        <p>Swapwear is not for children under 13 (or under 16 without parental consent). We do not knowingly collect
+            child data. Parent/guardian discovering such data should contact us for deletion.</p>
+
+        <h2>11. International Transfers</h2>
+        <p>Data may be processed on Firebase/Google servers outside Myanmar. By using Swapwear you consent to such
+            transfer with appropriate safeguards.</p>
+
+        <h2>12. Myanmar Language Summary / မြန်မာလို အကျဉ်းချုပ်</h2>
+        <p>Swapwear သည် second-hand အထည်အလိပ် ရောင်းဝယ်လဲလှယ်နိုင်သော app ဖြစ်ပါသည်။ အကောင့်ဖွင့်ရာတွင် နာမည်၊ ဖုန်း၊
+            email၊ လိပ်စာ၊ profile ပုံ၊ ရောင်းသူအတည်ပြုရန် မှတ်ပုံတင် (NRC) ရှေ့/နောက် ပုံများ ကောက်ယူပါသည်။
+            အချက်အလက်များကို အကောင့်စီမံခန့်ခွဲမှု၊ အမှာစာပို့ဆောင်မှု၊ လိမ်လည်မှုကာကွယ်ရေးနှင့် notification
+            ပေးပို့ရန်သာ အသုံးပြုပါသည်။ NRC ပုံများကို public မပြပါ။ အကောင့်ဖျက်လိုပါက support@swapwear.com သို့
+            ဆက်သွယ်နိုင်ပါသည်။</p>
+
+        <h2>13. Changes to This Policy</h2>
+        <p>We will update this page and notify via in-app notice or push for material changes. Continued use after
+            update means acceptance.</p>
+
+        <h2>14. Contact Us</h2>
+        <p>
+            <strong>Swapwear Support</strong><br />
+            Email: <a href="mailto:support@swapwear.com">support@swapwear.com</a><br />
+            <!-- REPLACE with your real address / phone / Facebook page -->
+            Address: Yangon, Myanmar<br />
+            Phone: +95-XXXXXXXXX<br />
+            Data Protection Contact: privacy@swapwear.com
+        </p>
+
+        <footer>
+            © 2026 Swapwear • Package: com.app.swap_wear (Android) / com.app.swapWear (iOS) • This policy does not
+            constitute legal advice. Adapt contact details before publishing to Play Console &gt; App content &gt;
+            Privacy Policy and App Store Connect.
+        </footer>
+    </div>
+</body>
+
+</html>
