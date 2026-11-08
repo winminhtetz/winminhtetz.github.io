@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StreamSub - Online Video & Custom SRT Player</title>
+  <!-- Tailwind CSS CDN for sleek responsive layout -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- HLS.js for .m3u8 live & VOD streaming support -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
+  <!-- Google Font: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #020617;
+      color: #f1f5f9;
+    }
+
+    /* Custom Range Sliders */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #6366f1;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+      transition: transform 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* Custom Scrollbar for Subtitle Transcript */
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.4);
+      border-radius: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(99, 102, 241, 0.7);
+    }
+
+    /* Subtitle Text Shadow for crisp readability over bright scenes */
+    .subtitle-cue {
+      text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.95), 0px 0px 8px rgba(0, 0, 0, 0.75);
+      transition: all 0.08s ease-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-14 selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Header -->
+  <header class="border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+            <line x1="7" y1="2" x2="7" y2="22"></line>
+            <line x1="17" y1="2" x2="17" y2="22"></line>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <line x1="2" y1="7" x2="7" y2="7"></line>
+            <line x1="2" y1="17" x2="7" y2="17"></line>
+            <line x1="17" y1="17" x2="22" y2="17"></line>
+            <line x1="17" y1="7" x2="22" y2="7"></line>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-lg tracking-tight text-white">StreamSub</h1>
+            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              Pure HTML/CSS/JS
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">
+            Direct Video Stream (.mp4, .webm, .m3u8) + Local Mobile SRT Subtitle Player
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-xs px-3 py-1.5 rounded-xl bg-slate-800/90 text-slate-300 border border-slate-700 flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span id="cueCountBadge">4 cues loaded</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- LEFT COLUMN: Video Player & Sample Streams (8 cols) -->
+    <div class="lg:col-span-8 flex flex-col gap-4">
+
+      <!-- Video Container -->
+      <div id="playerContainer" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-800 select-none flex items-center justify-center group">
+        
+        <!-- HTML5 Video Element (Removed crossorigin="anonymous" so Archive.org & non-CORS direct links play smoothly) -->
+        <video
+          id="videoElement"
+          class="w-full h-full object-contain cursor-pointer"
+          playsinline
+        ></video>
+
+        <!-- Loading Spinner Overlay -->
+        <div id="loadingOverlay" class="hidden absolute inset-0 flex items-center justify-center bg-black/40 pointer-events-none z-10">
+          <div class="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+
+        <!-- Error Message Overlay -->
+        <div id="errorOverlay" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 p-6 text-center z-20">
+          <svg class="w-12 h-12 text-rose-500 mb-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <p id="errorText" class="text-white font-semibold text-base max-w-md mb-2">Unable to load video stream.</p>
+          <p class="text-xs text-slate-400 max-w-sm mb-4">
+            Ensure your link is a direct video stream (.mp4, .webm, or .m3u8) and allows cross-origin playback.
+          </p>
+          <button id="fallbackSampleBtn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-medium text-white transition">
+            Load Sample MP4 Video
+          </button>
+        </div>
+
+        <!-- Custom Subtitle Overlay (Works in Mobile & Desktop Fullscreen) -->
+        <div
+          id="subtitleOverlay"
+          class="absolute left-0 right-0 px-4 sm:px-10 pointer-events-none flex flex-col items-center text-center z-10"
+          style="bottom: 12%;"
+        ></div>
+
+        <!-- Settings Popover Menu (Subtitle Style & Playback Speed) -->
+        <div
+          id="settingsMenu"
+          class="hidden absolute bottom-20 right-4 w-72 sm:w-80 bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl p-4 shadow-2xl z-30 text-xs"
+        >
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-3">
+            <div class="flex gap-2">
+              <button id="tabSubtitlesBtn" class="px-2.5 py-1 rounded-lg font-medium bg-indigo-600 text-white transition">
+                Subtitle Style
+              </button>
+              <button id="tabSpeedBtn" class="px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition">
+                Speed (<span id="speedTabLabel">1x</span>)
+              </button>
+            </div>
+            <button id="closeSettingsBtn" class="text-slate-400 hover:text-white px-1.5 text-sm">✕</button>
+          </div>
+
+          <!-- Tab 1: Subtitle Customization -->
+          <div id="subtitlesPanel" class="space-y-3.5">
+            <!-- Font Size -->
+            <div>
+              <div class="flex justify-between text-slate-300 mb-1">
+                <span>Font Size</span>
+                <span id="fontSizeVal" class="font-mono text-indigo-400">20px</span>
+              </div>
+              <input id="fontSizeSlider" type="range" min="12" max="40" value="20" class="w-full h-1.5" />
+            </div>
+
+            <!-- Subtitle Sync Delay -->
+            <div>
+              <div class="flex justify-between text-slate-300 mb-1">
+                <span>Subtitle Sync Delay</span>
+                <span id="subDelayVal" class="font-mono text-indigo-400">0.0s</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button id="delayMinusBtn" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-slate-200 transition">
+                  - 0.5s
+                </button>
+                <button id="delayResetBtn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-slate-300 transition">
+                  Reset
+                </button>
+                <button id="delayPlusBtn" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-slate-200 transition">
+                  + 0.5s
+                </button>
+              </div>
+            </div>
+
+            <!-- Vertical Bottom Position -->
+            <div>
+              <div class="flex justify-between text-slate-300 mb-1">
+                <span>Bottom Position</span>
+                <span id="bottomPosVal" class="font-mono text-indigo-400">12%</span>
+              </div>
+              <input id="bottomPosSlider" type="range" min="4" max="45" value="12" class="w-full h-1.5" />
+            </div>
+
+            <!-- Background Opacity -->
+            <div>
+              <div class="flex justify-between text-slate-300 mb-1">
+                <span>Background Dim</span>
+                <span id="bgOpacityVal" class="font-mono text-indigo-400">75%</span>
+              </div>
+              <input id="bgOpacitySlider" type="range" min="0" max="1" step="0.05" value="0.75" class="w-full h-1.5" />
+            </div>
+
+            <!-- Text Color Swatches -->
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-slate-300">Text Color</span>
+              <div class="flex items-center gap-2" id="colorSwatches">
+                <button data-color="#FFFFFF" class="w-5 h-5 rounded-full border-2 border-indigo-400 scale-110 transition" style="background-color: #FFFFFF;"></button>
+                <button data-color="#FACC15" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #FACC15;"></button>
+                <button data-color="#38BDF8" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #38BDF8;"></button>
+                <button data-color="#4ADE80" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #4ADE80;"></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Playback Speed -->
+          <div id="speedPanel" class="hidden grid grid-cols-3 gap-2">
+            <button data-speed="0.5" class="speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition">0.5x</button>
+            <button data-speed="0.75" class="speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition">0.75x</button>
+            <button data-speed="1" class="speed-btn py-2 rounded-xl font-medium border bg-indigo-600/30 border-indigo-500 text-indigo-300 transition">1x</button>
+            <button data-speed="1.25" class="speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition">1.25x</button>
+            <button data-speed="1.5" class="speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition">1.5x</button>
+            <button data-speed="2" class="speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition">2x</button>
+          </div>
+        </div>
+
+        <!-- Bottom Player Controls Bar -->
+        <div
+          id="controlsBar"
+          class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent pt-10 pb-3 px-4 transition-opacity duration-300 z-20"
+        >
+          <!-- Timeline Seek Slider -->
+          <div class="flex items-center gap-3 mb-2.5">
+            <input
+              id="seekSlider"
+              type="range"
+              min="0"
+              max="100"
+              step="0.1"
+              value="0"
+              class="w-full h-1.5"
+            />
+          </div>
+
+          <!-- Buttons Row -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 sm:gap-3">
+              <!-- Play / Pause Button -->
+              <button id="playPauseBtn" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition" title="Play / Pause">
+                <!-- Play Icon -->
+                <svg id="playIcon" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <!-- Pause Icon -->
+                <svg id="pauseIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <rect x="6" y="4" width="4" height="16"></rect>
+                  <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+              </button>
+
+              <!-- Rewind 10s -->
+              <button id="rewindBtn" class="p-2 rounded-xl hover:bg-white/10 text-slate-200 transition hidden sm:flex" title="Rewind 10s">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <polyline points="1 4 1 10 7 10"></polyline>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+              </button>
+
+              <!-- Forward 10s -->
+              <button id="forwardBtn" class="p-2 rounded-xl hover:bg-white/10 text-slate-200 transition hidden sm:flex" title="Forward 10s">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+              </button>
+
+              <!-- Volume Mute & Slider -->
+              <div class="flex items-center gap-1.5">
+                <button id="muteBtn" class="p-2 rounded-xl hover:bg-white/10 text-slate-200 transition" title="Mute / Unmute">
+                  <svg id="volOnIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                  </svg>
+                  <svg id="volOffIcon" class="w-5 h-5 text-rose-400 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <line x1="23" y1="9" x2="17" y2="15"></line>
+                    <line x1="17" y1="9" x2="23" y2="15"></line>
+                  </svg>
+                </button>
+                <input
+                  id="volumeSlider"
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value="1"
+                  class="w-16 sm:w-20 h-1 hidden sm:block"
+                />
+              </div>
+
+              <!-- Time Display -->
+              <div class="text-xs font-mono text-slate-300 ml-1">
+                <span id="currentTimeLabel">00:00</span>
+                <span class="text-slate-500 mx-1">/</span>
+                <span id="durationLabel" class="text-slate-400">00:00</span>
+              </div>
+            </div>
+
+            <!-- Right Controls: CC Toggle, Settings, Fullscreen -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <!-- CC Toggle -->
+              <button
+                id="ccToggleBtn"
+                class="px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 border bg-indigo-600/30 border-indigo-500/60 text-indigo-200 transition"
+                title="Toggle Subtitles"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                  <path d="M7 15h4M15 15h2M7 11h2M13 11h4"></path>
+                </svg>
+                <span id="ccToggleText" class="hidden sm:inline">CC On</span>
+              </button>
+
+              <!-- Settings Gear -->
+              <button
+                id="settingsBtn"
+                class="p-2 rounded-xl hover:bg-white/10 text-slate-200 transition"
+                title="Subtitle & Speed Settings"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+              </button>
+
+              <!-- Fullscreen Toggle -->
+              <button
+                id="fullscreenBtn"
+                class="p-2 rounded-xl hover:bg-white/10 text-slate-200 transition"
+                title="Fullscreen"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preset Test Streams Bar -->
+      <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2 text-xs text-slate-400">
+          <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+          <span>Quick Test Streams:</span>
+        </div>
+        <div class="flex flex-wrap gap-2" id="sampleStreamsContainer">
+          <button
+            data-url="https://archive.org/download/the-boondocks-complete/Season%201/The%20Boondocks%20-%20S01E01%20-%20The%20Garden%20Party.ia.mp4"
+            class="sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-indigo-600/20 border-indigo-500/50 text-indigo-300 font-medium transition"
+          >
+            Archive.org Stream (.mp4)
+          </button>
+          <button
+            data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            class="sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-slate-800/70 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition"
+          >
+            Big Buck Bunny (.mp4)
+          </button>
+          <button
+            data-url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
+            class="sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-slate-800/70 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition"
+          >
+            Tears of Steel (HLS .m3u8)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Video URL Form, Phone SRT Upload & Live Cue List (4 cols) -->
+    <div class="lg:col-span-4 flex flex-col gap-5">
+
+      <!-- Card 1: Direct Video Stream URL -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg">
+        <div class="flex items-center gap-2.5 mb-3">
+          <div class="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-sm font-semibold text-white">1. Direct Video URL</h2>
+            <p class="text-xs text-slate-400">Input .mp4, .webm, or .m3u8 link</p>
+          </div>
+        </div>
+
+        <form id="urlForm" class="space-y-3">
+          <div class="relative">
+            <input
+              id="urlInput"
+              type="url"
+              required
+              placeholder="https://example.com/movie.mp4 or .m3u8"
+              value="https://archive.org/download/the-boondocks-complete/Season%201/The%20Boondocks%20-%20S01E01%20-%20The%20Garden%20Party.ia.mp4"
+              class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 outline-none transition pr-8"
+            />
+            <button
+              id="clearUrlBtn"
+              type="button"
+              class="
+                absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs
+              "
+              title="Clear URL"
+            >
+              ✕
+            </button>
+          </div>
+          <button
+            type="submit"
+            class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-medium text-xs shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2"
+          >
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Load & Play Video
+          </button>
+        </form>
+      </div>
+
+      <!-- Card 2: Upload SRT File from Phone / Device -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg">
+        <div class="flex items-center gap-2.5 mb-3">
+          <div class="p-2 rounded-lg bg-purple-500/10 text-purple-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-sm font-semibold text-white">2. Subtitle File (.srt / .vtt)</h2>
+            <p class="text-xs text-slate-400">Choose file from your phone or PC</p>
+          </div>
+        </div>
+
+        <!-- Hidden Native File Picker -->
+        <input id="srtFileInput" type="file" accept=".srt,.vtt,text/plain" class="hidden" />
+
+        <!-- Mobile-friendly Upload Button -->
+        <button
+          id="uploadTriggerBtn"
+          type="button"
+          class="w-full border-2 border-dashed border-slate-700 hover:border-indigo-500/70 bg-slate-950/60 hover:bg-slate-950 rounded-xl p-4 text-center transition group flex flex-col items-center justify-center gap-2"
+        >
+          <div class="w-10 h-10 rounded-full bg-slate-900 group-hover:bg-indigo-500/20 flex items-center justify-center text-slate-400 group-hover:text-indigo-400 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs font-medium text-slate-200 group-hover:text-white">
+              Tap to select <span class="text-indigo-400 underline">.srt</span> file from device
+            </p>
+            <p class="text-[11px] text-slate-500 mt-0.5">
+              Supports Android Storage, iOS Files & Desktop
+            </p>
+          </div>
+        </button>
+
+        <!-- File Info & Encoding Selector -->
+        <div class="mt-3 pt-3 border-t border-slate-800/80 flex flex-col gap-2.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-400 truncate max-w-[200px]">
+              Active: <strong id="srtFileNameLabel" class="text-slate-200">Sample_Subtitles.srt</strong>
+            </span>
+            <button id="clearSrtBtn" class="text-rose-400 hover:text-rose-300 text-[11px] font-medium">
+              Clear
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-400">Encoding:</span>
+            <select
+              id="encodingSelect"
+              class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 outline-none focus:border-indigo-500"
+            >
+              <option value="UTF-8">UTF-8 (Universal / Myanmar / Asian)</option>
+              <option value="Windows-1252">Windows-1252 (Western)</option>
+              <option value="ISO-8859-1">ISO-8859-1 (Latin)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Interactive Live Subtitle Transcript -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg flex-1 flex flex-col max-h-[340px]">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-semibold text-white">Interactive Subtitle Track</h3>
+          <span class="text-[11px] text-slate-400">Tap line to jump</span>
+        </div>
+
+        <div id="transcriptContainer" class="overflow-y-auto space-y-1.5 pr-1 flex-1 custom-scroll"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Pure Vanilla JavaScript Application Logic -->
+  <script>
+    // Default sample SRT content so user can see subtitles working immediately
+    const SAMPLE_SRT = `1
+00:00:01,000 --> 00:00:04,500
+Welcome to StreamSub HTML5 Player!
+<i>Pure HTML, CSS, and Vanilla JS.</i>
+
+2
+00:00:05,000 --> 00:00:09,000
+Paste any direct <b>.mp4</b> or <b>.m3u8</b> stream link
+and load an <b>.srt</b> file from your phone.
+
+3
+00:00:09,500 --> 00:00:14,000
+Click the gear icon in the video player to adjust
+subtitle size, timing offset, and colors!
+
+4
+00:00:14,500 --> 00:00:20,000
+Tap any subtitle line on the right panel to jump directly to that timestamp.`;
+
+    // Application State
+    let subtitles = [];
+    let rawSrtFile = null;
+    let showSubtitles = true;
+    let subDelay = 0; // seconds
+    let subFontSize = 20; // px
+    let subColor = "#FFFFFF";
+    let subBgOpacity = 0.75;
+    let subBottomOffset = 12; // %
+    let hlsInstance = null;
+    let controlsTimeout = null;
+
+    // DOM Elements
+    const playerContainer = document.getElementById('playerContainer');
+    const video = document.getElementById('videoElement');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const errorOverlay = document.getElementById('errorOverlay');
+    const errorText = document.getElementById('errorText');
+    const fallbackSampleBtn = document.getElementById('fallbackSampleBtn');
+    const subtitleOverlay = document.getElementById('subtitleOverlay');
+    const controlsBar = document.getElementById('controlsBar');
+
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const playIcon = document.getElementById('playIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const rewindBtn = document.getElementById('rewindBtn');
+    const forwardBtn = document.getElementById('forwardBtn');
+    const muteBtn = document.getElementById('muteBtn');
+    const volOnIcon = document.getElementById('volOnIcon');
+    const volOffIcon = document.getElementById('volOffIcon');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const seekSlider = document.getElementById('seekSlider');
+    const currentTimeLabel = document.getElementById('currentTimeLabel');
+    const durationLabel = document.getElementById('durationLabel');
+
+    const ccToggleBtn = document.getElementById('ccToggleBtn');
+    const ccToggleText = document.getElementById('ccToggleText');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsMenu = document.getElementById('settingsMenu');
+    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    // Settings Menu Elements
+    const tabSubtitlesBtn = document.getElementById('tabSubtitlesBtn');
+    const tabSpeedBtn = document.getElementById('tabSpeedBtn');
+    const subtitlesPanel = document.getElementById('subtitlesPanel');
+    const speedPanel = document.getElementById('speedPanel');
+    const speedTabLabel = document.getElementById('speedTabLabel');
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const fontSizeVal = document.getElementById('fontSizeVal');
+    const subDelayVal = document.getElementById('subDelayVal');
+    const delayMinusBtn = document.getElementById('delayMinusBtn');
+    const delayResetBtn = document.getElementById('delayResetBtn');
+    const delayPlusBtn = document.getElementById('delayPlusBtn');
+    const bottomPosSlider = document.getElementById('bottomPosSlider');
+    const bottomPosVal = document.getElementById('bottomPosVal');
+    const bgOpacitySlider = document.getElementById('bgOpacitySlider');
+    const bgOpacityVal = document.getElementById('bgOpacityVal');
+    const colorSwatches = document.getElementById('colorSwatches');
+
+    // Sidebar Inputs
+    const urlForm = document.getElementById('urlForm');
+    const urlInput = document.getElementById('urlInput');
+    const clearUrlBtn = document.getElementById('clearUrlBtn');
+    const srtFileInput = document.getElementById('srtFileInput');
+    const uploadTriggerBtn = document.getElementById('uploadTriggerBtn');
+    const srtFileNameLabel = document.getElementById('srtFileNameLabel');
+    const clearSrtBtn = document.getElementById('clearSrtBtn');
+    const encodingSelect = document.getElementById('encodingSelect');
+    const transcriptContainer = document.getElementById('transcriptContainer');
+    const cueCountBadge = document.getElementById('cueCountBadge');
+
+    // Helper: Parse SRT timestamp (00:01:20,400) to seconds
+    function parseTime(timeStr) {
+      if (!timeStr) return 0;
+      const parts = timeStr.trim().split(':');
+      if (parts.length < 3) return 0;
+      const hours = parseInt(parts[0], 10) || 0;
+      const minutes = parseInt(parts[1], 10) || 0;
+      const secParts = parts[2].replace(',', '.').split('.');
+      const seconds = parseInt(secParts[0], 10) || 0;
+      const ms = secParts[1] ? parseInt(secParts[1].padEnd(3, '0').slice(0, 3), 10) : 0;
+      return hours * 3600 + minutes * 60 + seconds + ms / 1000;
+    }
+
+    // Helper: Parse full SRT/VTT text into cue objects
+    function parseSRT(data) {
+      if (!data) return [];
+      const normalized = data.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      const blocks = normalized.trim().split(/\n\s*\n/);
+      const parsed = [];
+
+      blocks.forEach((block, idx) => {
+        const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+        if (!lines.length || lines[0].startsWith('WEBVTT')) return;
+
+        const timeLineIdx = lines.findIndex(l => l.includes('-->'));
+        if (timeLineIdx !== -1) {
+          const [startRaw, endRaw] = lines[timeLineIdx].split('-->');
+          const cleanEnd = endRaw ? endRaw.trim().split(' ')[0] : '';
+          const startTime = parseTime(startRaw);
+          const endTime = parseTime(cleanEnd);
+          const text = lines.slice(timeLineIdx + 1).join('\n');
+
+          if (!isNaN(startTime) && !isNaN(endTime) && text) {
+            parsed.push({ id: idx, startTime, endTime, text });
+          }
+        }
+      });
+      return parsed;
+    }
+
+    // Helper: Format seconds into MM:SS or HH:MM:SS
+    function formatDuration(sec) {
+      if (!sec || isNaN(sec)) return "00:00";
+      const hrs = Math.floor(sec / 3600);
+      const mins = Math.floor((sec % 3600) / 60);
+      const secs = Math.floor(sec % 60);
+      if (hrs > 0) {
+        return `${hrs}:${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      }
+      return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    // Load video stream (.mp4 or .m3u8 via HLS.js)
+    function loadVideoSource(url) {
+      if (!url) return;
+      errorOverlay.classList.add('hidden');
+      loadingOverlay.classList.remove('hidden');
+
+      if (hlsInstance) {
+        hlsInstance.destroy();
+        hlsInstance = null;
+      }
+
+      const isM3U8 = url.toLowerCase().includes('.m3u8');
+
+      // Ensure crossorigin attribute is removed so redirects like Archive.org aren't blocked by browser CORS checks
+      video.removeAttribute('crossorigin');
+
+      if (isM3U8) {
+        if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = url;
+        } else if (window.Hls && Hls.isSupported()) {
+          hlsInstance = new Hls({ enableWorker: true });
+          hlsInstance.loadSource(url);
+          hlsInstance.attachMedia(video);
+          hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+            loadingOverlay.classList.add('hidden');
+          });
+          hlsInstance.on(Hls.Events.ERROR, (event, data) => {
+            if (data.fatal) {
+              loadingOverlay.classList.add('hidden');
+              errorText.textContent = "Failed to load HLS (.m3u8) stream. Check CORS or stream validity.";
+              errorOverlay.classList.remove('hidden');
+            }
+          });
+        } else {
+          loadingOverlay.classList.add('hidden');
+          errorText.textContent = "HLS (.m3u8) is not supported in this browser.";
+          errorOverlay.classList.remove('hidden');
+        }
+      } else {
+        video.src = url;
+        video.load();
+      }
+
+      // Highlight matching sample button if applicable
+      document.querySelectorAll('.sample-stream-btn').forEach(btn => {
+        if (btn.dataset.url === url) {
+          btn.className = "sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-indigo-600/20 border-indigo-500/50 text-indigo-300 font-medium transition";
+        } else {
+          btn.className = "sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-slate-800/70 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition";
+        }
+      });
+    }
+
+    // Render Interactive Subtitle Transcript List
+    function renderTranscript() {
+      cueCountBadge.textContent = `${subtitles.length} cues loaded`;
+      transcriptContainer.innerHTML = '';
+
+      if (subtitles.length === 0) {
+        transcriptContainer.innerHTML = `
+          <div class="flex flex-col items-center justify-center text-center py-8 text-slate-500 text-xs">
+            <p>No subtitles loaded.</p>
+            <p class="text-[11px] mt-1">Upload an .srt file above to view and seek cues.</p>
+          </div>
+        `;
+        return;
+      }
+
+      subtitles.forEach(cue => {
+        const btn = document.createElement('button');
+        btn.id = `cue-item-${cue.id}`;
+        btn.className = "w-full text-left p-2.5 rounded-xl text-xs transition flex items-start gap-2.5 border bg-slate-950/50 border-slate-800/60 text-slate-300 hover:bg-slate-800/60";
+        btn.innerHTML = `
+          <span class="font-mono text-[11px] text-indigo-400 shrink-0 mt-0.5">${formatDuration(cue.startTime)}</span>
+          <span class="line-clamp-2 leading-relaxed">${cue.text.replace(/\n/g, ' ')}</span>
+        `;
+        btn.addEventListener('click', () => {
+          video.currentTime = Math.max(0, cue.startTime + subDelay);
+          updateSubtitlesOverlay();
+        });
+        transcriptContainer.appendChild(btn);
+      });
+    }
+
+    // Render Active Subtitles inside Video Overlay
+    function updateSubtitlesOverlay() {
+      subtitleOverlay.innerHTML = '';
+      if (!showSubtitles || subtitles.length === 0) return;
+
+      const adjustedTime = video.currentTime - subDelay;
+      const activeCues = subtitles.filter(c => adjustedTime >= c.startTime && adjustedTime <= c.endTime);
+
+      const isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+      const computedSize = isFs ? Math.round(subFontSize * 1.35) : subFontSize;
+
+      activeCues.forEach(cue => {
+        const div = document.createElement('div');
+        div.className = "subtitle-cue max-w-3xl px-3.5 py-1.5 rounded-lg leading-snug font-medium tracking-wide mb-1";
+        div.style.fontSize = `${computedSize}px`;
+        div.style.color = subColor;
+        div.style.backgroundColor = `rgba(0, 0, 0, ${subBgOpacity})`;
+        div.innerHTML = cue.text.replace(/\n/g, '<br/>');
+        subtitleOverlay.appendChild(div);
+      });
+
+      // Update active highlight in transcript list
+      subtitles.forEach(cue => {
+        const el = document.getElementById(`cue-item-${cue.id}`);
+        if (!el) return;
+        const isActive = activeCues.some(ac => ac.id === cue.id);
+        if (isActive) {
+          el.className = "w-full text-left p-2.5 rounded-xl text-xs transition flex items-start gap-2.5 border bg-indigo-600/20 border-indigo-500/50 text-white";
+        } else {
+          el.className = "w-full text-left p-2.5 rounded-xl text-xs transition flex items-start gap-2.5 border bg-slate-950/50 border-slate-800/60 text-slate-300 hover:bg-slate-800/60";
+        }
+      });
+    }
+
+    // Read uploaded SRT file with chosen text encoding
+    function readSrtFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        subtitles = parseSRT(e.target.result);
+        renderTranscript();
+        updateSubtitlesOverlay();
+      };
+      reader.readAsText(file, encodingSelect.value);
+    }
+
+    // Auto-hide player controls when mouse/touch is idle
+    function triggerControlsVisibility() {
+      controlsBar.classList.remove('opacity-0', 'pointer-events-none');
+      clearTimeout(controlsTimeout);
+      controlsTimeout = setTimeout(() => {
+        if (!video.paused && settingsMenu.classList.contains('hidden')) {
+          controlsBar.classList.add('opacity-0', 'pointer-events-none');
+        }
+      }, 3000);
+    }
+
+    // Event Listeners: Video Playback
+    function togglePlay() {
+      if (video.paused || video.ended) {
+        video.play().catch(() => {
+          errorText.textContent = "Playback could not be started. Check video stream URL.";
+          errorOverlay.classList.remove('hidden');
+        });
+      } else {
+        video.pause();
+      }
+    }
+
+    video.addEventListener('click', togglePlay);
+    playPauseBtn.addEventListener('click', togglePlay);
+
+    video.addEventListener('play', () => {
+      playIcon.classList.add('hidden');
+      pauseIcon.classList.remove('hidden');
+      triggerControlsVisibility();
+    });
+
+    video.addEventListener('pause', () => {
+      pauseIcon.classList.add('hidden');
+      playIcon.classList.remove('hidden');
+      controlsBar.classList.remove('opacity-0', 'pointer-events-none');
+    });
+
+    video.addEventListener('loadedmetadata', () => {
+      loadingOverlay.classList.add('hidden');
+      seekSlider.max = video.duration || 100;
+      durationLabel.textContent = formatDuration(video.duration);
+    });
+
+    video.addEventListener('waiting', () => loadingOverlay.classList.remove('hidden'));
+    video.addEventListener('playing', () => loadingOverlay.classList.add('hidden'));
+
+    video.addEventListener('timeupdate', () => {
+      seekSlider.value = video.currentTime;
+      currentTimeLabel.textContent = formatDuration(video.currentTime);
+      updateSubtitlesOverlay();
+    });
+
+    video.addEventListener('error', () => {
+      loadingOverlay.classList.add('hidden');
+      errorText.textContent = "Unable to play this video URL. Ensure it is a direct .mp4, .webm, or .m3u8 link.";
+      errorOverlay.classList.remove('hidden');
+    });
+
+    seekSlider.addEventListener('input', (e) => {
+      video.currentTime = parseFloat(e.target.value);
+      updateSubtitlesOverlay();
+    });
+
+    rewindBtn.addEventListener('click', () => {
+      video.currentTime = Math.max(0, video.currentTime - 10);
+    });
+
+    forwardBtn.addEventListener('click', () => {
+      video.currentTime = Math.min(video.duration || 0, video.currentTime + 10);
+    });
+
+    // Volume & Mute
+    volumeSlider.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      video.volume = val;
+      video.muted = val === 0;
+      volOnIcon.classList.toggle('hidden', val === 0);
+      volOffIcon.classList.toggle('hidden', val !== 0);
+    });
+
+    muteBtn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      volOnIcon.classList.toggle('hidden', video.muted);
+      volOffIcon.classList.toggle('hidden', !video.muted);
+      volumeSlider.value = video.muted ? 0 : video.volume;
+    });
+
+    // Subtitles CC On/Off Toggle
+    ccToggleBtn.addEventListener('click', () => {
+      showSubtitles = !showSubtitles;
+      ccToggleText.textContent = showSubtitles ? "CC On" : "CC Off";
+      ccToggleBtn.className = showSubtitles
+        ? "px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 border bg-indigo-600/30 border-indigo-500/60 text-indigo-200 transition"
+        : "px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 border bg-white/5 border-white/10 text-slate-400 hover:text-white transition";
+      updateSubtitlesOverlay();
+    });
+
+    // Settings Menu & Tabs
+    settingsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      settingsMenu.classList.toggle('hidden');
+    });
+    closeSettingsBtn.addEventListener('click', () => settingsMenu.classList.add('hidden'));
+
+    tabSubtitlesBtn.addEventListener('click', () => {
+      subtitlesPanel.classList.remove('hidden');
+      speedPanel.classList.add('hidden');
+      tabSubtitlesBtn.className = "px-2.5 py-1 rounded-lg font-medium bg-indigo-600 text-white transition";
+      tabSpeedBtn.className = "px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition";
+    });
+
+    tabSpeedBtn.addEventListener('click', () => {
+      speedPanel.classList.remove('hidden');
+      subtitlesPanel.classList.add('hidden');
+      tabSpeedBtn.className = "px-2.5 py-1 rounded-lg font-medium bg-indigo-600 text-white transition";
+      tabSubtitlesBtn.className = "px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition";
+    });
+
+    // Subtitle Customization Controls
+    fontSizeSlider.addEventListener('input', (e) => {
+      subFontSize = Number(e.target.value);
+      fontSizeVal.textContent = `${subFontSize}px`;
+      updateSubtitlesOverlay();
+    });
+
+    function updateDelayDisplay() {
+      subDelayVal.textContent = `${subDelay > 0 ? '+' : ''}${subDelay.toFixed(1)}s`;
+      updateSubtitlesOverlay();
+    }
+
+    delayMinusBtn.addEventListener('click', () => {
+      subDelay = Math.round((subDelay - 0.5) * 10) / 10;
+      updateDelayDisplay();
+    });
+    delayResetBtn.addEventListener('click', () => {
+      subDelay = 0;
+      updateDelayDisplay();
+    });
+    delayPlusBtn.addEventListener('click', () => {
+      subDelay = Math.round((subDelay + 0.5) * 10) / 10;
+      updateDelayDisplay();
+    });
+
+    bottomPosSlider.addEventListener('input', (e) => {
+      subBottomOffset = Number(e.target.value);
+      bottomPosVal.textContent = `${subBottomOffset}%`;
+      subtitleOverlay.style.bottom = `${subBottomOffset}%`;
+    });
+
+    bgOpacitySlider.addEventListener('input', (e) => {
+      subBgOpacity = Number(e.target.value);
+      bgOpacityVal.textContent = `${Math.round(subBgOpacity * 100)}%`;
+      updateSubtitlesOverlay();
+    });
+
+    colorSwatches.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        subColor = btn.dataset.color;
+        colorSwatches.querySelectorAll('button').forEach(b => {
+          b.className = b === btn
+            ? "w-5 h-5 rounded-full border-2 border-indigo-400 scale-110 transition"
+            : "w-5 h-5 rounded-full border-2 border-transparent transition";
+        });
+        updateSubtitlesOverlay();
+      });
+    });
+
+    // Playback Speed Buttons
+    document.querySelectorAll('.speed-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const spd = parseFloat(btn.dataset.speed);
+        video.playbackRate = spd;
+        speedTabLabel.textContent = `${spd}x`;
+        document.querySelectorAll('.speed-btn').forEach(b => {
+          b.className = b === btn
+            ? "speed-btn py-2 rounded-xl font-medium border bg-indigo-600/30 border-indigo-500 text-indigo-300 transition"
+            : "speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition";
+        });
+      });
+    });
+
+    // Fullscreen Support (Container-based so custom SRT overlay remains visible)
+    fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (playerContainer.requestFullscreen) {
+          playerContainer.requestFullscreen();
+        } else if (playerContainer.webkitRequestFullscreen) {
+          playerContainer.webkitRequestFullscreen();
+        } else if (video.webkitEnterFullscreen) {
+          video.webkitEnterFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    });
+
+    document.addEventListener('fullscreenchange', updateSubtitlesOverlay);
+    document.addEventListener('webkitfullscreenchange', updateSubtitlesOverlay);
+
+    // URL Form & Sample Buttons
+    urlForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const url = urlInput.value.trim();
+      if (url) loadVideoSource(url);
+    });
+
+    clearUrlBtn.addEventListener('click', () => {
+      urlInput.value = '';
+      urlInput.focus();
+    });
+
+    fallbackSampleBtn.addEventListener('click', () => {
+      const sampleUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+      urlInput.value = sampleUrl;
+      loadVideoSource(sampleUrl);
+    });
+
+    document.querySelectorAll('.sample-stream-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        urlInput.value = btn.dataset.url;
+        loadVideoSource(btn.dataset.url);
+      });
+    });
+
+    // SRT Upload from Phone / Device
+    uploadTriggerBtn.addEventListener('click', () => srtFileInput.click());
+
+    srtFileInput.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      rawSrtFile = file;
+      srtFileNameLabel.textContent = file.name;
+      readSrtFile(file);
+    });
+
+    encodingSelect.addEventListener('change', () => {
+      if (rawSrtFile) readSrtFile(rawSrtFile);
+    });
+
+    clearSrtBtn.addEventListener('click', () => {
+      subtitles = [];
+      rawSrtFile = null;
+      srtFileInput.value = '';
+      srtFileNameLabel.textContent = 'None';
+      renderTranscript();
+      updateSubtitlesOverlay();
+    });
+
+    // Mouse / Touch activity listener on player container
+    playerContainer.addEventListener('mousemove', triggerControlsVisibility);
+    playerContainer.addEventListener('touchstart', triggerControlsVisibility, { passive: true });
+
+    // Initialize Player with Sample Video & Sample SRT
+    window.addEventListener('DOMContentLoaded', () => {
+      subtitles = parseSRT(SAMPLE_SRT);
+      renderTranscript();
+      loadVideoSource(urlInput.value);
+    });
+  </script>
+</body>
+</html>
