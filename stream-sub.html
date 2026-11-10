@@ -13,15 +13,15 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #020617;
-      color: #f1f5f9;
+      background-color: #000000;
+      color: #f4f4f5;
     }
 
     /* Custom Range Sliders */
     input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
-      background: rgba(148, 163, 184, 0.25);
+      background: rgba(255, 255, 255, 0.2);
       border-radius: 999px;
       cursor: pointer;
     }
@@ -31,9 +31,9 @@
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      background: #6366f1;
-      border: 2px solid #ffffff;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+      background: #ffffff;
+      border: 2px solid #000000;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
       transition: transform 0.15s ease;
     }
     input[type="range"]::-webkit-slider-thumb:hover {
@@ -45,15 +45,15 @@
       width: 6px;
     }
     .custom-scroll::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(24, 24, 27, 0.6);
       border-radius: 8px;
     }
     .custom-scroll::-webkit-scrollbar-thumb {
-      background: rgba(99, 102, 241, 0.4);
+      background: rgba(255, 255, 255, 0.25);
       border-radius: 8px;
     }
     .custom-scroll::-webkit-scrollbar-thumb:hover {
-      background: rgba(99, 102, 241, 0.7);
+      background: rgba(255, 255, 255, 0.45);
     }
 
     /* Subtitle Text Shadow for crisp readability over bright scenes */
@@ -61,16 +61,44 @@
       text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.95), 0px 0px 8px rgba(0, 0, 0, 0.75);
       transition: all 0.08s ease-out;
     }
+
+    /* Native iOS System Player Fullscreen Caption Styling (Apple AVPlayer & WebKit) */
+    ::cue {
+      background-color: rgba(0, 0, 0, 0.8) !important;
+      color: #ffffff !important;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+      font-size: 1.15rem !important;
+      text-shadow: 0px 1px 3px rgba(0,0,0,0.9) !important;
+      line-height: 1.4 !important;
+    }
+    video::-webkit-media-text-track-display {
+      position: absolute !important;
+      bottom: 12% !important;
+    }
+
+    /* iOS Safari Pseudo-Fullscreen Fallback so custom HTML subtitles stay visible */
+    .ios-fullscreen {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100dvh !important;
+      max-width: none !important;
+      max-height: none !important;
+      z-index: 9999 !important;
+      border-radius: 0 !important;
+      border: none !important;
+      background-color: #000000 !important;
+    }
   </style>
 </head>
-<body class="min-h-screen pb-14 selection:bg-indigo-500 selection:text-white">
+<body class="min-h-screen pb-14 selection:bg-white selection:text-black">
 
   <!-- Top Header -->
-  <header class="border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-md sticky top-0 z-30">
+  <header class="border-b border-zinc-800 bg-black/80 backdrop-blur-md sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <div class="w-10 h-10 rounded-xl bg-white text-black flex items-center justify-center shadow-lg shadow-white/10 font-bold">
+          <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
             <line x1="7" y1="2" x2="7" y2="22"></line>
             <line x1="17" y1="2" x2="17" y2="22"></line>
@@ -84,19 +112,19 @@
         <div>
           <div class="flex items-center gap-2">
             <h1 class="font-bold text-lg tracking-tight text-white">StreamSub</h1>
-            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              Pure HTML/CSS/JS
+            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700">
+              B&amp;W Minimal
             </span>
           </div>
-          <p class="text-xs text-slate-400 hidden sm:block">
+          <p class="text-xs text-zinc-400 hidden sm:block">
             Direct Video Stream (.mp4, .webm, .m3u8) + Local Mobile SRT Subtitle Player
           </p>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <span class="text-xs px-3 py-1.5 rounded-xl bg-slate-800/90 text-slate-300 border border-slate-700 flex items-center gap-1.5">
-          <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <span class="text-xs px-3 py-1.5 rounded-xl bg-zinc-900 text-zinc-300 border border-zinc-800 flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
           </svg>
           <span id="cueCountBadge">4 cues loaded</span>
@@ -112,7 +140,7 @@
     <div class="lg:col-span-8 flex flex-col gap-4">
 
       <!-- Video Container -->
-      <div id="playerContainer" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-800 select-none flex items-center justify-center group">
+      <div id="playerContainer" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-zinc-800 select-none flex items-center justify-center group">
         
         <!-- HTML5 Video Element (Removed crossorigin="anonymous" so Archive.org & non-CORS direct links play smoothly) -->
         <video
@@ -122,22 +150,22 @@
         ></video>
 
         <!-- Loading Spinner Overlay -->
-        <div id="loadingOverlay" class="hidden absolute inset-0 flex items-center justify-center bg-black/40 pointer-events-none z-10">
-          <div class="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        <div id="loadingOverlay" class="hidden absolute inset-0 flex items-center justify-center bg-black/60 pointer-events-none z-10">
+          <div class="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
         </div>
 
         <!-- Error Message Overlay -->
-        <div id="errorOverlay" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 p-6 text-center z-20">
-          <svg class="w-12 h-12 text-rose-500 mb-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <div id="errorOverlay" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black/95 p-6 text-center z-20">
+          <svg class="w-12 h-12 text-zinc-400 mb-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="8" x2="12" y2="12"></line>
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
           <p id="errorText" class="text-white font-semibold text-base max-w-md mb-2">Unable to load video stream.</p>
-          <p class="text-xs text-slate-400 max-w-sm mb-4">
+          <p class="text-xs text-zinc-400 max-w-sm mb-4">
             Ensure your link is a direct video stream (.mp4, .webm, or .m3u8) and allows cross-origin playback.
           </p>
-          <button id="fallbackSampleBtn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-medium text-white transition">
+          <button id="fallbackSampleBtn" class="px-4 py-2 rounded-xl bg-white hover:bg-zinc-200 text-black text-xs font-semibold transition">
             Load Sample MP4 Video
           </button>
         </div>
@@ -152,45 +180,45 @@
         <!-- Settings Popover Menu (Subtitle Style & Playback Speed) -->
         <div
           id="settingsMenu"
-          class="hidden absolute bottom-20 right-4 w-72 sm:w-80 bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl p-4 shadow-2xl z-30 text-xs"
+          class="hidden absolute bottom-20 right-4 w-72 sm:w-80 bg-zinc-950/95 backdrop-blur-xl border border-zinc-800 rounded-2xl p-4 shadow-2xl z-30 text-xs"
         >
-          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-3">
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-2.5 mb-3">
             <div class="flex gap-2">
-              <button id="tabSubtitlesBtn" class="px-2.5 py-1 rounded-lg font-medium bg-indigo-600 text-white transition">
+              <button id="tabSubtitlesBtn" class="px-2.5 py-1 rounded-lg font-medium bg-white text-black transition">
                 Subtitle Style
               </button>
-              <button id="tabSpeedBtn" class="px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition">
+              <button id="tabSpeedBtn" class="px-2.5 py-1 rounded-lg font-medium text-zinc-400 hover:text-white transition">
                 Speed (<span id="speedTabLabel">1x</span>)
               </button>
             </div>
-            <button id="closeSettingsBtn" class="text-slate-400 hover:text-white px-1.5 text-sm">✕</button>
+            <button id="closeSettingsBtn" class="text-zinc-400 hover:text-white px-1.5 text-sm">✕</button>
           </div>
 
           <!-- Tab 1: Subtitle Customization -->
           <div id="subtitlesPanel" class="space-y-3.5">
             <!-- Font Size -->
             <div>
-              <div class="flex justify-between text-slate-300 mb-1">
+              <div class="flex justify-between text-zinc-300 mb-1">
                 <span>Font Size</span>
-                <span id="fontSizeVal" class="font-mono text-indigo-400">20px</span>
+                <span id="fontSizeVal" class="font-mono text-white">20px</span>
               </div>
               <input id="fontSizeSlider" type="range" min="12" max="40" value="20" class="w-full h-1.5" />
             </div>
 
             <!-- Subtitle Sync Delay -->
             <div>
-              <div class="flex justify-between text-slate-300 mb-1">
+              <div class="flex justify-between text-zinc-300 mb-1">
                 <span>Subtitle Sync Delay</span>
-                <span id="subDelayVal" class="font-mono text-indigo-400">0.0s</span>
+                <span id="subDelayVal" class="font-mono text-white">0.0s</span>
               </div>
               <div class="flex items-center gap-1.5">
-                <button id="delayMinusBtn" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-slate-200 transition">
+                <button id="delayMinusBtn" class="flex-1 py-1.5 bg-zinc-900 hover:bg-zinc-800 rounded-lg border border-zinc-800 text-zinc-200 transition">
                   - 0.5s
                 </button>
-                <button id="delayResetBtn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-slate-300 transition">
+                <button id="delayResetBtn" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 rounded-lg border border-zinc-800 text-zinc-300 transition">
                   Reset
                 </button>
-                <button id="delayPlusBtn" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-slate-200 transition">
+                <button id="delayPlusBtn" class="flex-1 py-1.5 bg-zinc-900 hover:bg-zinc-800 rounded-lg border border-zinc-800 text-zinc-200 transition">
                   + 0.5s
                 </button>
               </div>
@@ -198,42 +226,42 @@
 
             <!-- Vertical Bottom Position -->
             <div>
-              <div class="flex justify-between text-slate-300 mb-1">
+              <div class="flex justify-between text-zinc-300 mb-1">
                 <span>Bottom Position</span>
-                <span id="bottomPosVal" class="font-mono text-indigo-400">12%</span>
+                <span id="bottomPosVal" class="font-mono text-white">12%</span>
               </div>
               <input id="bottomPosSlider" type="range" min="4" max="45" value="12" class="w-full h-1.5" />
             </div>
 
             <!-- Background Opacity -->
             <div>
-              <div class="flex justify-between text-slate-300 mb-1">
+              <div class="flex justify-between text-zinc-300 mb-1">
                 <span>Background Dim</span>
-                <span id="bgOpacityVal" class="font-mono text-indigo-400">75%</span>
+                <span id="bgOpacityVal" class="font-mono text-white">75%</span>
               </div>
               <input id="bgOpacitySlider" type="range" min="0" max="1" step="0.05" value="0.75" class="w-full h-1.5" />
             </div>
 
             <!-- Text Color Swatches -->
             <div class="flex items-center justify-between pt-1">
-              <span class="text-slate-300">Text Color</span>
+              <span class="text-zinc-300">Text Color</span>
               <div class="flex items-center gap-2" id="colorSwatches">
-                <button data-color="#FFFFFF" class="w-5 h-5 rounded-full border-2 border-indigo-400 scale-110 transition" style="background-color: #FFFFFF;"></button>
-                <button data-color="#FACC15" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #FACC15;"></button>
-                <button data-color="#38BDF8" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #38BDF8;"></button>
-                <button data-color="#4ADE80" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #4ADE80;"></button>
+                <button data-color="#FFFFFF" class="w-5 h-5 rounded-full border-2 border-white scale-110 transition" style="background-color: #FFFFFF;"></button>
+                <button data-color="#D4D4D8" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #D4D4D8;"></button>
+                <button data-color="#A1A1AA" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #A1A1AA;"></button>
+                <button data-color="#71717A" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #71717A;"></button>
               </div>
             </div>
           </div>
 
           <!-- Tab 2: Playback Speed -->
           <div id="speedPanel" class="hidden grid grid-cols-3 gap-2">
-            <button data-speed="0.5" class="speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition">0.5x</button>
-            <button data-speed="0.75" class="speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition">0.75x</button>
-            <button data-speed="1" class="speed-btn py-2 rounded-xl font-medium border bg-indigo-600/30 border-indigo-500 text-indigo-300 transition">1x</button>
-            <button data-speed="1.25" class="speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition">1.25x</button>
-            <button data-speed="1.5" class="speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition">1.5x</button>
-            <button data-speed="2" class="speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition">2x</button>
+            <button data-speed="0.5" class="speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition">0.5x</button>
+            <button data-speed="0.75" class="speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition">0.75x</button>
+            <button data-speed="1" class="speed-btn py-2 rounded-xl font-medium border bg-white border-white text-black transition">1x</button>
+            <button data-speed="1.25" class="speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition">1.25x</button>
+            <button data-speed="1.5" class="speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition">1.5x</button>
+            <button data-speed="2" class="speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition">2x</button>
           </div>
         </div>
 
@@ -259,7 +287,7 @@
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 sm:gap-3">
               <!-- Play / Pause Button -->
-              <button id="playPauseBtn" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition" title="Play / Pause">
+              <button id="playPauseBtn" class="p-2 rounded-xl bg-white text-black hover:bg-zinc-200 transition" title="Play / Pause">
                 <!-- Play Icon -->
                 <svg id="playIcon" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
                   <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -272,7 +300,7 @@
               </button>
 
               <!-- Rewind 10s -->
-              <button id="rewindBtn" class="p-2 rounded-xl hover:bg-white/10 text-slate-200 transition hidden sm:flex" title="Rewind 10s">
+              <button id="rewindBtn" class="p-2 rounded-xl hover:bg-white/10 text-zinc-200 transition hidden sm:flex" title="Rewind 10s">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <polyline points="1 4 1 10 7 10"></polyline>
                   <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
@@ -280,7 +308,7 @@
               </button>
 
               <!-- Forward 10s -->
-              <button id="forwardBtn" class="p-2 rounded-xl hover:bg-white/10 text-slate-200 transition hidden sm:flex" title="Forward 10s">
+              <button id="forwardBtn" class="p-2 rounded-xl hover:bg-white/10 text-zinc-200 transition hidden sm:flex" title="Forward 10s">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <polyline points="23 4 23 10 17 10"></polyline>
                   <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
@@ -289,13 +317,13 @@
 
               <!-- Volume Mute & Slider -->
               <div class="flex items-center gap-1.5">
-                <button id="muteBtn" class="p-2 rounded-xl hover:bg-white/10 text-slate-200 transition" title="Mute / Unmute">
+                <button id="muteBtn" class="p-2 rounded-xl hover:bg-white/10 text-zinc-200 transition" title="Mute / Unmute">
                   <svg id="volOnIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
                   </svg>
-                  <svg id="volOffIcon" class="w-5 h-5 text-rose-400 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <svg id="volOffIcon" class="w-5 h-5 text-zinc-500 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <line x1="23" y1="9" x2="17" y2="15"></line>
                     <line x1="17" y1="9" x2="23" y2="15"></line>
@@ -313,10 +341,10 @@
               </div>
 
               <!-- Time Display -->
-              <div class="text-xs font-mono text-slate-300 ml-1">
+              <div class="text-xs font-mono text-zinc-300 ml-1">
                 <span id="currentTimeLabel">00:00</span>
-                <span class="text-slate-500 mx-1">/</span>
-                <span id="durationLabel" class="text-slate-400">00:00</span>
+                <span class="text-zinc-600 mx-1">/</span>
+                <span id="durationLabel" class="text-zinc-400">00:00</span>
               </div>
             </div>
 
@@ -325,7 +353,7 @@
               <!-- CC Toggle -->
               <button
                 id="ccToggleBtn"
-                class="px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 border bg-indigo-600/30 border-indigo-500/60 text-indigo-200 transition"
+                class="px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 border bg-white text-black border-white transition"
                 title="Toggle Subtitles"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -338,7 +366,7 @@
               <!-- Settings Gear -->
               <button
                 id="settingsBtn"
-                class="p-2 rounded-xl hover:bg-white/10 text-slate-200 transition"
+                class="p-2 rounded-xl hover:bg-white/10 text-zinc-200 transition"
                 title="Subtitle & Speed Settings"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -350,7 +378,7 @@
               <!-- Fullscreen Toggle -->
               <button
                 id="fullscreenBtn"
-                class="p-2 rounded-xl hover:bg-white/10 text-slate-200 transition"
+                class="p-2 rounded-xl hover:bg-white/10 text-zinc-200 transition"
                 title="Fullscreen"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -363,27 +391,27 @@
       </div>
 
       <!-- Preset Test Streams Bar -->
-      <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2 text-xs text-slate-400">
-          <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2 text-xs text-zinc-400">
+          <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
           <span>Quick Test Streams:</span>
         </div>
         <div class="flex flex-wrap gap-2" id="sampleStreamsContainer">
           <button
             data-url="https://archive.org/download/the-boondocks-complete/Season%201/The%20Boondocks%20-%20S01E01%20-%20The%20Garden%20Party.ia.mp4"
-            class="sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-indigo-600/20 border-indigo-500/50 text-indigo-300 font-medium transition"
+            class="sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-white border-white text-black font-semibold transition"
           >
             Archive.org Stream (.mp4)
           </button>
           <button
             data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-            class="sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-slate-800/70 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition"
+            class="sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition"
           >
             Big Buck Bunny (.mp4)
           </button>
           <button
             data-url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
-            class="sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-slate-800/70 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition"
+            class="sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition"
           >
             Tears of Steel (HLS .m3u8)
           </button>
@@ -395,9 +423,9 @@
     <div class="lg:col-span-4 flex flex-col gap-5">
 
       <!-- Card 1: Direct Video Stream URL -->
-      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg">
+      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 shadow-lg">
         <div class="flex items-center gap-2.5 mb-3">
-          <div class="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+          <div class="p-2 rounded-lg bg-zinc-900 text-white border border-zinc-800">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -405,7 +433,7 @@
           </div>
           <div>
             <h2 class="text-sm font-semibold text-white">1. Direct Video URL</h2>
-            <p class="text-xs text-slate-400">Input .mp4, .webm, or .m3u8 link</p>
+            <p class="text-xs text-zinc-400">Input .mp4, .webm, or .m3u8 link</p>
           </div>
         </div>
 
@@ -417,13 +445,13 @@
               required
               placeholder="https://example.com/movie.mp4 or .m3u8"
               value="https://archive.org/download/the-boondocks-complete/Season%201/The%20Boondocks%20-%20S01E01%20-%20The%20Garden%20Party.ia.mp4"
-              class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 outline-none transition pr-8"
+              class="w-full bg-black border border-zinc-800 focus:border-white focus:ring-1 focus:ring-white rounded-xl px-3.5 py-2.5 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition pr-8"
             />
             <button
               id="clearUrlBtn"
               type="button"
               class="
-                absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs
+                absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-200 text-xs
               "
               title="Clear URL"
             >
@@ -432,7 +460,7 @@
           </div>
           <button
             type="submit"
-            class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-medium text-xs shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2"
+            class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-zinc-200 active:bg-zinc-300 text-black font-semibold text-xs shadow-lg shadow-white/5 transition flex items-center justify-center gap-2"
           >
             <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -443,9 +471,9 @@
       </div>
 
       <!-- Card 2: Upload SRT File from Phone / Device -->
-      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg">
+      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 shadow-lg">
         <div class="flex items-center gap-2.5 mb-3">
-          <div class="p-2 rounded-lg bg-purple-500/10 text-purple-400">
+          <div class="p-2 rounded-lg bg-zinc-900 text-white border border-zinc-800">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
@@ -455,7 +483,7 @@
           </div>
           <div>
             <h2 class="text-sm font-semibold text-white">2. Subtitle File (.srt / .vtt)</h2>
-            <p class="text-xs text-slate-400">Choose file from your phone or PC</p>
+            <p class="text-xs text-zinc-400">Choose file from your phone or PC</p>
           </div>
         </div>
 
@@ -466,9 +494,9 @@
         <button
           id="uploadTriggerBtn"
           type="button"
-          class="w-full border-2 border-dashed border-slate-700 hover:border-indigo-500/70 bg-slate-950/60 hover:bg-slate-950 rounded-xl p-4 text-center transition group flex flex-col items-center justify-center gap-2"
+          class="w-full border-2 border-dashed border-zinc-800 hover:border-zinc-500 bg-black hover:bg-zinc-950 rounded-xl p-4 text-center transition group flex flex-col items-center justify-center gap-2"
         >
-          <div class="w-10 h-10 rounded-full bg-slate-900 group-hover:bg-indigo-500/20 flex items-center justify-center text-slate-400 group-hover:text-indigo-400 transition">
+          <div class="w-10 h-10 rounded-full bg-zinc-900 group-hover:bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-white transition">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="17 8 12 3 7 8"></polyline>
@@ -476,31 +504,31 @@
             </svg>
           </div>
           <div>
-            <p class="text-xs font-medium text-slate-200 group-hover:text-white">
-              Tap to select <span class="text-indigo-400 underline">.srt</span> file from device
+            <p class="text-xs font-medium text-zinc-200 group-hover:text-white">
+              Tap to select <span class="text-white underline">.srt</span> file from device
             </p>
-            <p class="text-[11px] text-slate-500 mt-0.5">
+            <p class="text-[11px] text-zinc-500 mt-0.5">
               Supports Android Storage, iOS Files & Desktop
             </p>
           </div>
         </button>
 
         <!-- File Info & Encoding Selector -->
-        <div class="mt-3 pt-3 border-t border-slate-800/80 flex flex-col gap-2.5">
+        <div class="mt-3 pt-3 border-t border-zinc-800 flex flex-col gap-2.5">
           <div class="flex items-center justify-between text-xs">
-            <span class="text-slate-400 truncate max-w-[200px]">
-              Active: <strong id="srtFileNameLabel" class="text-slate-200">Sample_Subtitles.srt</strong>
+            <span class="text-zinc-400 truncate max-w-[200px]">
+              Active: <strong id="srtFileNameLabel" class="text-zinc-200">Sample_Subtitles.srt</strong>
             </span>
-            <button id="clearSrtBtn" class="text-rose-400 hover:text-rose-300 text-[11px] font-medium">
+            <button id="clearSrtBtn" class="text-zinc-400 hover:text-white underline text-[11px] font-medium">
               Clear
             </button>
           </div>
 
           <div class="flex items-center justify-between text-xs">
-            <span class="text-slate-400">Encoding:</span>
+            <span class="text-zinc-400">Encoding:</span>
             <select
               id="encodingSelect"
-              class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 outline-none focus:border-indigo-500"
+              class="bg-black border border-zinc-800 rounded-lg px-2.5 py-1 text-xs text-zinc-200 outline-none focus:border-white"
             >
               <option value="UTF-8">UTF-8 (Universal / Myanmar / Asian)</option>
               <option value="Windows-1252">Windows-1252 (Western)</option>
@@ -511,10 +539,10 @@
       </div>
 
       <!-- Card 3: Interactive Live Subtitle Transcript -->
-      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg flex-1 flex flex-col max-h-[340px]">
+      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 shadow-lg flex-1 flex flex-col max-h-[340px]">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-sm font-semibold text-white">Interactive Subtitle Track</h3>
-          <span class="text-[11px] text-slate-400">Tap line to jump</span>
+          <span class="text-[11px] text-zinc-400">Tap line to jump</span>
         </div>
 
         <div id="transcriptContainer" class="overflow-y-auto space-y-1.5 pr-1 flex-1 custom-scroll"></div>
@@ -556,6 +584,9 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
     let subBottomOffset = 12; // %
     let hlsInstance = null;
     let controlsTimeout = null;
+    let isIosCustomFullscreen = false;
+    let isNativeIosFullscreen = false;
+    let nativeTextTrack = null;
 
     // DOM Elements
     const playerContainer = document.getElementById('playerContainer');
@@ -669,6 +700,55 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
       return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }
 
+    // Direct iOS Native TextTrack Cue Populator
+    // iOS Safari's native AVPlayer ignores Blob URL <track> tags, but reliably renders addTextTrack & VTTCue
+    function syncNativeVttTrack() {
+      // 1. Remove any legacy <track> elements
+      const oldTracks = video.querySelectorAll('track');
+      oldTracks.forEach(t => t.remove());
+
+      // 2. Disable existing text tracks
+      if (video.textTracks) {
+        for (let i = 0; i < video.textTracks.length; i++) {
+          video.textTracks[i].mode = 'disabled';
+        }
+      }
+
+      if (!subtitles || subtitles.length === 0) {
+        nativeTextTrack = null;
+        return;
+      }
+
+      try {
+        // Create an in-memory native TextTrack on the HTML5 video element
+        nativeTextTrack = video.addTextTrack("subtitles", "Custom SRT", "en");
+        
+        // Populate cues directly via VTTCue API
+        const CueClass = window.VTTCue || window.TextTrackCue;
+        if (CueClass) {
+          subtitles.forEach((cue) => {
+            const start = Math.max(0, cue.startTime + subDelay);
+            const end = Math.max(start + 0.2, cue.endTime + subDelay);
+            const cleanText = cue.text.replace(/<[^>]+>/g, ''); // strip HTML tags for clean native rendering
+            
+            try {
+              const vttCue = new CueClass(start, end, cleanText);
+              // Position cue near the bottom in native iOS player
+              if ('line' in vttCue) vttCue.line = -3;
+              nativeTextTrack.addCue(vttCue);
+            } catch (err) {
+              console.warn("Could not add cue:", err);
+            }
+          });
+        }
+
+        // Enable track mode if inside native fullscreen, otherwise keep hidden to avoid duplicate overlays
+        nativeTextTrack.mode = (isNativeIosFullscreen && showSubtitles) ? 'showing' : 'hidden';
+      } catch (err) {
+        console.error("Native track initialization failed:", err);
+      }
+    }
+
     // Load video stream (.mp4 or .m3u8 via HLS.js)
     function loadVideoSource(url) {
       if (!url) return;
@@ -712,12 +792,14 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
         video.load();
       }
 
+      syncNativeVttTrack();
+
       // Highlight matching sample button if applicable
       document.querySelectorAll('.sample-stream-btn').forEach(btn => {
         if (btn.dataset.url === url) {
-          btn.className = "sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-indigo-600/20 border-indigo-500/50 text-indigo-300 font-medium transition";
+          btn.className = "sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-white border-white text-black font-semibold transition";
         } else {
-          btn.className = "sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-slate-800/70 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition";
+          btn.className = "sample-stream-btn text-xs px-3 py-1.5 rounded-xl border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition";
         }
       });
     }
@@ -725,11 +807,12 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
     // Render Interactive Subtitle Transcript List
     function renderTranscript() {
       cueCountBadge.textContent = `${subtitles.length} cues loaded`;
+      syncNativeVttTrack();
       transcriptContainer.innerHTML = '';
 
       if (subtitles.length === 0) {
         transcriptContainer.innerHTML = `
-          <div class="flex flex-col items-center justify-center text-center py-8 text-slate-500 text-xs">
+          <div class="flex flex-col items-center justify-center text-center py-8 text-zinc-500 text-xs">
             <p>No subtitles loaded.</p>
             <p class="text-[11px] mt-1">Upload an .srt file above to view and seek cues.</p>
           </div>
@@ -740,9 +823,9 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
       subtitles.forEach(cue => {
         const btn = document.createElement('button');
         btn.id = `cue-item-${cue.id}`;
-        btn.className = "w-full text-left p-2.5 rounded-xl text-xs transition flex items-start gap-2.5 border bg-slate-950/50 border-slate-800/60 text-slate-300 hover:bg-slate-800/60";
+        btn.className = "w-full text-left p-2.5 rounded-xl text-xs transition flex items-start gap-2.5 border bg-black border-zinc-800/80 text-zinc-300 hover:bg-zinc-900";
         btn.innerHTML = `
-          <span class="font-mono text-[11px] text-indigo-400 shrink-0 mt-0.5">${formatDuration(cue.startTime)}</span>
+          <span class="font-mono text-[11px] text-white font-semibold shrink-0 mt-0.5">${formatDuration(cue.startTime)}</span>
           <span class="line-clamp-2 leading-relaxed">${cue.text.replace(/\n/g, ' ')}</span>
         `;
         btn.addEventListener('click', () => {
@@ -756,12 +839,12 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
     // Render Active Subtitles inside Video Overlay
     function updateSubtitlesOverlay() {
       subtitleOverlay.innerHTML = '';
-      if (!showSubtitles || subtitles.length === 0) return;
+      if (!showSubtitles || subtitles.length === 0 || isNativeIosFullscreen) return;
 
       const adjustedTime = video.currentTime - subDelay;
       const activeCues = subtitles.filter(c => adjustedTime >= c.startTime && adjustedTime <= c.endTime);
 
-      const isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+      const isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement || isIosCustomFullscreen);
       const computedSize = isFs ? Math.round(subFontSize * 1.35) : subFontSize;
 
       activeCues.forEach(cue => {
@@ -780,9 +863,9 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
         if (!el) return;
         const isActive = activeCues.some(ac => ac.id === cue.id);
         if (isActive) {
-          el.className = "w-full text-left p-2.5 rounded-xl text-xs transition flex items-start gap-2.5 border bg-indigo-600/20 border-indigo-500/50 text-white";
+          el.className = "w-full text-left p-2.5 rounded-xl text-xs transition flex items-start gap-2.5 border bg-zinc-800 border-white text-white";
         } else {
-          el.className = "w-full text-left p-2.5 rounded-xl text-xs transition flex items-start gap-2.5 border bg-slate-950/50 border-slate-800/60 text-slate-300 hover:bg-slate-800/60";
+          el.className = "w-full text-left p-2.5 rounded-xl text-xs transition flex items-start gap-2.5 border bg-black border-zinc-800/80 text-zinc-300 hover:bg-zinc-900";
         }
       });
     }
@@ -793,6 +876,7 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
       const reader = new FileReader();
       reader.onload = (e) => {
         subtitles = parseSRT(e.target.result);
+        syncNativeVttTrack();
         renderTranscript();
         updateSubtitlesOverlay();
       };
@@ -892,8 +976,12 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
       showSubtitles = !showSubtitles;
       ccToggleText.textContent = showSubtitles ? "CC On" : "CC Off";
       ccToggleBtn.className = showSubtitles
-        ? "px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 border bg-indigo-600/30 border-indigo-500/60 text-indigo-200 transition"
-        : "px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 border bg-white/5 border-white/10 text-slate-400 hover:text-white transition";
+        ? "px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 border bg-white text-black border-white transition"
+        : "px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 border bg-zinc-900 border-zinc-700 text-zinc-400 hover:text-white transition";
+      
+      if (nativeTextTrack) {
+        nativeTextTrack.mode = (isNativeIosFullscreen && showSubtitles) ? 'showing' : 'hidden';
+      }
       updateSubtitlesOverlay();
     });
 
@@ -907,15 +995,15 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
     tabSubtitlesBtn.addEventListener('click', () => {
       subtitlesPanel.classList.remove('hidden');
       speedPanel.classList.add('hidden');
-      tabSubtitlesBtn.className = "px-2.5 py-1 rounded-lg font-medium bg-indigo-600 text-white transition";
-      tabSpeedBtn.className = "px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition";
+      tabSubtitlesBtn.className = "px-2.5 py-1 rounded-lg font-medium bg-white text-black transition";
+      tabSpeedBtn.className = "px-2.5 py-1 rounded-lg font-medium text-zinc-400 hover:text-white transition";
     });
 
     tabSpeedBtn.addEventListener('click', () => {
       speedPanel.classList.remove('hidden');
       subtitlesPanel.classList.add('hidden');
-      tabSpeedBtn.className = "px-2.5 py-1 rounded-lg font-medium bg-indigo-600 text-white transition";
-      tabSubtitlesBtn.className = "px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition";
+      tabSpeedBtn.className = "px-2.5 py-1 rounded-lg font-medium bg-white text-black transition";
+      tabSubtitlesBtn.className = "px-2.5 py-1 rounded-lg font-medium text-zinc-400 hover:text-white transition";
     });
 
     // Subtitle Customization Controls
@@ -927,6 +1015,7 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
 
     function updateDelayDisplay() {
       subDelayVal.textContent = `${subDelay > 0 ? '+' : ''}${subDelay.toFixed(1)}s`;
+      syncNativeVttTrack();
       updateSubtitlesOverlay();
     }
 
@@ -947,57 +1036,105 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
       subBottomOffset = Number(e.target.value);
       bottomPosVal.textContent = `${subBottomOffset}%`;
       subtitleOverlay.style.bottom = `${subBottomOffset}%`;
+      syncNativeVttTrack();
     });
 
     bgOpacitySlider.addEventListener('input', (e) => {
-      subBgOpacity = Number(e.target.value);
+      subBgOpacity = parseFloat(e.target.value);
       bgOpacityVal.textContent = `${Math.round(subBgOpacity * 100)}%`;
       updateSubtitlesOverlay();
     });
 
-    colorSwatches.querySelectorAll('button').forEach(btn => {
+    // Subtitle Color Selection
+    colorSwatches.querySelectorAll('button').forEach((btn) => {
       btn.addEventListener('click', () => {
         subColor = btn.dataset.color;
-        colorSwatches.querySelectorAll('button').forEach(b => {
-          b.className = b === btn
-            ? "w-5 h-5 rounded-full border-2 border-indigo-400 scale-110 transition"
-            : "w-5 h-5 rounded-full border-2 border-transparent transition";
+        colorSwatches.querySelectorAll('button').forEach((b) => {
+          b.classList.remove('border-white', 'scale-110');
+          b.classList.add('border-transparent');
         });
+        btn.classList.remove('border-transparent');
+        btn.classList.add('border-white', 'scale-110');
         updateSubtitlesOverlay();
       });
     });
 
-    // Playback Speed Buttons
-    document.querySelectorAll('.speed-btn').forEach(btn => {
+    // Speed Controls
+    document.querySelectorAll('.speed-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const spd = parseFloat(btn.dataset.speed);
-        video.playbackRate = spd;
-        speedTabLabel.textContent = `${spd}x`;
-        document.querySelectorAll('.speed-btn').forEach(b => {
-          b.className = b === btn
-            ? "speed-btn py-2 rounded-xl font-medium border bg-indigo-600/30 border-indigo-500 text-indigo-300 transition"
-            : "speed-btn py-2 rounded-xl font-medium border bg-slate-800/80 border-slate-700/70 text-slate-300 hover:bg-slate-800 transition";
+        const speed = parseFloat(btn.dataset.speed);
+        video.playbackRate = speed;
+        speedTabLabel.textContent = `${speed}x`;
+        document.querySelectorAll('.speed-btn').forEach((b) => {
+          b.className =
+            'speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition';
         });
+        btn.className =
+          'speed-btn py-2 rounded-xl font-medium border bg-white border-white text-black transition';
       });
     });
 
-    // Fullscreen Support (Container-based so custom SRT overlay remains visible)
+    // Fullscreen Support (Container-based + iOS Safari Fullscreen Fix so custom SRT overlay remains visible)
     fullscreenBtn.addEventListener('click', () => {
-      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        if (playerContainer.requestFullscreen) {
-          playerContainer.requestFullscreen();
-        } else if (playerContainer.webkitRequestFullscreen) {
-          playerContainer.webkitRequestFullscreen();
-        } else if (video.webkitEnterFullscreen) {
-          video.webkitEnterFullscreen();
-        }
-      } else {
-        if (document.exitFullscreen) {
+      // Exit if already in fullscreen or iOS custom fullscreen
+      if (document.fullscreenElement || document.webkitFullscreenElement || isIosCustomFullscreen) {
+        if (isIosCustomFullscreen) {
+          isIosCustomFullscreen = false;
+          playerContainer.classList.remove('ios-fullscreen');
+          document.body.style.overflow = '';
+          updateSubtitlesOverlay();
+        } else if (document.exitFullscreen) {
           document.exitFullscreen();
         } else if (document.webkitExitFullscreen) {
           document.webkitExitFullscreen();
         }
+        return;
       }
+
+      // Enter Fullscreen: Prefer container fullscreen, or use iOS viewport fullscreen so HTML captions don't get hidden
+      if (playerContainer.requestFullscreen) {
+        playerContainer.requestFullscreen().catch(() => {
+          isIosCustomFullscreen = true;
+          playerContainer.classList.add('ios-fullscreen');
+          document.body.style.overflow = 'hidden';
+          updateSubtitlesOverlay();
+        });
+      } else if (playerContainer.webkitRequestFullscreen) {
+        playerContainer.webkitRequestFullscreen();
+      } else if (video.webkitEnterFullscreen) {
+        // Fallback directly to native iOS fullscreen if container fullscreen is completely unsupported
+        video.webkitEnterFullscreen();
+      } else {
+        isIosCustomFullscreen = true;
+        playerContainer.classList.add('ios-fullscreen');
+        document.body.style.overflow = 'hidden';
+        updateSubtitlesOverlay();
+      }
+    });
+
+    // Native iOS Safari Video Fullscreen Lifecycle Hooks
+    video.addEventListener('webkitbeginfullscreen', () => {
+      isNativeIosFullscreen = true;
+      if (nativeTextTrack) {
+        nativeTextTrack.mode = showSubtitles ? 'showing' : 'hidden';
+      }
+      // Re-assert textTracks[0] mode for Apple AVPlayer
+      if (video.textTracks && video.textTracks.length > 0) {
+        for (let i = 0; i < video.textTracks.length; i++) {
+          if (video.textTracks[i].label === "Custom SRT") {
+            video.textTracks[i].mode = showSubtitles ? 'showing' : 'hidden';
+          }
+        }
+      }
+      updateSubtitlesOverlay();
+    });
+
+    video.addEventListener('webkitendfullscreen', () => {
+      isNativeIosFullscreen = false;
+      if (nativeTextTrack) {
+        nativeTextTrack.mode = 'hidden';
+      }
+      updateSubtitlesOverlay();
     });
 
     document.addEventListener('fullscreenchange', updateSubtitlesOverlay);
@@ -1048,6 +1185,7 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
       rawSrtFile = null;
       srtFileInput.value = '';
       srtFileNameLabel.textContent = 'None';
+      syncNativeVttTrack();
       renderTranscript();
       updateSubtitlesOverlay();
     });
@@ -1059,6 +1197,7 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
     // Initialize Player with Sample Video & Sample SRT
     window.addEventListener('DOMContentLoaded', () => {
       subtitles = parseSRT(SAMPLE_SRT);
+      syncNativeVttTrack();
       renderTranscript();
       loadVideoSource(urlInput.value);
     });
