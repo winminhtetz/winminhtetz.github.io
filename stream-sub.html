@@ -76,59 +76,81 @@
       bottom: 12% !important;
     }
 
+    /* Bottom Sheet Slide Animations */
+    .bottom-sheet-backdrop {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .bottom-sheet-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .bottom-sheet-panel {
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .bottom-sheet-backdrop.active .bottom-sheet-panel {
+      transform: translateY(0);
+    }
+
     /* iOS Safari Pseudo-Fullscreen Fallback so custom HTML subtitles stay visible */
     .ios-fullscreen {
       position: fixed !important;
       inset: 0 !important;
       width: 100vw !important;
       height: 100dvh !important;
-      max-width: none !important;
-      max-height: none !important;
-      z-index: 9999 !important;
+      max-width: 100vw !important;
+      max-height: 100dvh !important;
+      z-index: 99999 !important;
       border-radius: 0 !important;
-      border: none !important;
-      background-color: #000000 !important;
+      background: #000000 !important;
     }
   </style>
 </head>
-<body class="min-h-screen pb-14 selection:bg-white selection:text-black">
+<body class="min-h-screen bg-black text-zinc-100 font-sans pb-16 selection:bg-white selection:text-black">
 
-  <!-- Top Header -->
-  <header class="border-b border-zinc-800 bg-black/80 backdrop-blur-md sticky top-0 z-30">
+  <!-- Top Navigation Header -->
+  <header class="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-white text-black flex items-center justify-center shadow-lg shadow-white/10 font-bold">
-          <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
-            <line x1="7" y1="2" x2="7" y2="22"></line>
-            <line x1="17" y1="2" x2="17" y2="22"></line>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <line x1="2" y1="7" x2="7" y2="7"></line>
-            <line x1="2" y1="17" x2="7" y2="17"></line>
-            <line x1="17" y1="17" x2="22" y2="17"></line>
-            <line x1="17" y1="7" x2="22" y2="7"></line>
-          </svg>
+        <div class="w-9 h-9 rounded-xl bg-white text-black flex items-center justify-center font-bold text-base shadow-sm">
+          ▶
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h1 class="font-bold text-lg tracking-tight text-white">StreamSub</h1>
-            <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700">
-              B&amp;W Minimal
+            <h1 class="font-bold text-base tracking-tight text-white">StreamSub</h1>
+            <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700">
+              HTML5 Player
             </span>
           </div>
-          <p class="text-xs text-zinc-400 hidden sm:block">
-            Direct Video Stream (.mp4, .webm, .m3u8) + Local Mobile SRT Subtitle Player
+          <p class="text-[11px] text-zinc-400 hidden sm:block">
+            Direct Video Stream (.mp4, .m3u8) + Custom Subtitle Sync
           </p>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
+        <!-- CC Toggle Badge -->
         <span class="text-xs px-3 py-1.5 rounded-xl bg-zinc-900 text-zinc-300 border border-zinc-800 flex items-center gap-1.5">
           <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
           </svg>
           <span id="cueCountBadge">4 cues loaded</span>
         </span>
+
+        <!-- Open Settings Bottom Sheet Button in Header -->
+        <button
+          id="headerSettingsBtn"
+          class="text-xs px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-200 text-black font-semibold flex items-center gap-1.5 transition"
+          title="Open Settings & Configuration"
+        >
+          <svg class="w-4 h-4 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span class="hidden sm:inline">Settings</span>
+        </button>
       </div>
     </div>
   </header>
@@ -136,13 +158,13 @@
   <!-- Main Workspace -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- LEFT COLUMN: Video Player & Sample Streams (8 cols) -->
+    <!-- LEFT COLUMN: Video Player & Presets (8 cols) -->
     <div class="lg:col-span-8 flex flex-col gap-4">
 
       <!-- Video Container -->
       <div id="playerContainer" class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-zinc-800 select-none flex items-center justify-center group">
         
-        <!-- HTML5 Video Element (Removed crossorigin="anonymous" so Archive.org & non-CORS direct links play smoothly) -->
+        <!-- HTML5 Video Element -->
         <video
           id="videoElement"
           class="w-full h-full object-contain cursor-pointer"
@@ -163,107 +185,19 @@
           </svg>
           <p id="errorText" class="text-white font-semibold text-base max-w-md mb-2">Unable to load video stream.</p>
           <p class="text-xs text-zinc-400 max-w-sm mb-4">
-            Ensure your link is a direct video stream (.mp4, .webm, or .m3u8) and allows cross-origin playback.
+            Ensure your link is a direct video stream (.mp4, .webm, or .m3u8).
           </p>
           <button id="fallbackSampleBtn" class="px-4 py-2 rounded-xl bg-white hover:bg-zinc-200 text-black text-xs font-semibold transition">
             Load Sample MP4 Video
           </button>
         </div>
 
-        <!-- Custom Subtitle Overlay (Works in Mobile & Desktop Fullscreen) -->
+        <!-- Custom Subtitle Overlay -->
         <div
           id="subtitleOverlay"
           class="absolute left-0 right-0 px-4 sm:px-10 pointer-events-none flex flex-col items-center text-center z-10"
           style="bottom: 12%;"
         ></div>
-
-        <!-- Settings Popover Menu (Subtitle Style & Playback Speed) -->
-        <div
-          id="settingsMenu"
-          class="hidden absolute bottom-20 right-4 w-72 sm:w-80 bg-zinc-950/95 backdrop-blur-xl border border-zinc-800 rounded-2xl p-4 shadow-2xl z-30 text-xs"
-        >
-          <div class="flex items-center justify-between border-b border-zinc-800 pb-2.5 mb-3">
-            <div class="flex gap-2">
-              <button id="tabSubtitlesBtn" class="px-2.5 py-1 rounded-lg font-medium bg-white text-black transition">
-                Subtitle Style
-              </button>
-              <button id="tabSpeedBtn" class="px-2.5 py-1 rounded-lg font-medium text-zinc-400 hover:text-white transition">
-                Speed (<span id="speedTabLabel">1x</span>)
-              </button>
-            </div>
-            <button id="closeSettingsBtn" class="text-zinc-400 hover:text-white px-1.5 text-sm">✕</button>
-          </div>
-
-          <!-- Tab 1: Subtitle Customization -->
-          <div id="subtitlesPanel" class="space-y-3.5">
-            <!-- Font Size -->
-            <div>
-              <div class="flex justify-between text-zinc-300 mb-1">
-                <span>Font Size</span>
-                <span id="fontSizeVal" class="font-mono text-white">20px</span>
-              </div>
-              <input id="fontSizeSlider" type="range" min="12" max="40" value="20" class="w-full h-1.5" />
-            </div>
-
-            <!-- Subtitle Sync Delay -->
-            <div>
-              <div class="flex justify-between text-zinc-300 mb-1">
-                <span>Subtitle Sync Delay</span>
-                <span id="subDelayVal" class="font-mono text-white">0.0s</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <button id="delayMinusBtn" class="flex-1 py-1.5 bg-zinc-900 hover:bg-zinc-800 rounded-lg border border-zinc-800 text-zinc-200 transition">
-                  - 0.5s
-                </button>
-                <button id="delayResetBtn" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 rounded-lg border border-zinc-800 text-zinc-300 transition">
-                  Reset
-                </button>
-                <button id="delayPlusBtn" class="flex-1 py-1.5 bg-zinc-900 hover:bg-zinc-800 rounded-lg border border-zinc-800 text-zinc-200 transition">
-                  + 0.5s
-                </button>
-              </div>
-            </div>
-
-            <!-- Vertical Bottom Position -->
-            <div>
-              <div class="flex justify-between text-zinc-300 mb-1">
-                <span>Bottom Position</span>
-                <span id="bottomPosVal" class="font-mono text-white">12%</span>
-              </div>
-              <input id="bottomPosSlider" type="range" min="4" max="45" value="12" class="w-full h-1.5" />
-            </div>
-
-            <!-- Background Opacity -->
-            <div>
-              <div class="flex justify-between text-zinc-300 mb-1">
-                <span>Background Dim</span>
-                <span id="bgOpacityVal" class="font-mono text-white">75%</span>
-              </div>
-              <input id="bgOpacitySlider" type="range" min="0" max="1" step="0.05" value="0.75" class="w-full h-1.5" />
-            </div>
-
-            <!-- Text Color Swatches -->
-            <div class="flex items-center justify-between pt-1">
-              <span class="text-zinc-300">Text Color</span>
-              <div class="flex items-center gap-2" id="colorSwatches">
-                <button data-color="#FFFFFF" class="w-5 h-5 rounded-full border-2 border-white scale-110 transition" style="background-color: #FFFFFF;"></button>
-                <button data-color="#D4D4D8" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #D4D4D8;"></button>
-                <button data-color="#A1A1AA" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #A1A1AA;"></button>
-                <button data-color="#71717A" class="w-5 h-5 rounded-full border-2 border-transparent transition" style="background-color: #71717A;"></button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tab 2: Playback Speed -->
-          <div id="speedPanel" class="hidden grid grid-cols-3 gap-2">
-            <button data-speed="0.5" class="speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition">0.5x</button>
-            <button data-speed="0.75" class="speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition">0.75x</button>
-            <button data-speed="1" class="speed-btn py-2 rounded-xl font-medium border bg-white border-white text-black transition">1x</button>
-            <button data-speed="1.25" class="speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition">1.25x</button>
-            <button data-speed="1.5" class="speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition">1.5x</button>
-            <button data-speed="2" class="speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition">2x</button>
-          </div>
-        </div>
 
         <!-- Bottom Player Controls Bar -->
         <div
@@ -348,7 +282,7 @@
               </div>
             </div>
 
-            <!-- Right Controls: CC Toggle, Settings, Fullscreen -->
+            <!-- Right Controls: CC Toggle, Gear (Opens Bottom Sheet), Fullscreen -->
             <div class="flex items-center gap-1.5 sm:gap-2">
               <!-- CC Toggle -->
               <button
@@ -363,11 +297,11 @@
                 <span id="ccToggleText" class="hidden sm:inline">CC On</span>
               </button>
 
-              <!-- Settings Gear -->
+              <!-- Settings Gear Button -> Opens Bottom Sheet -->
               <button
                 id="settingsBtn"
-                class="p-2 rounded-xl hover:bg-white/10 text-zinc-200 transition"
-                title="Subtitle & Speed Settings"
+                class="p-2 rounded-xl hover:bg-white/10 text-zinc-200 hover:text-white transition"
+                title="Open Settings & Configuration"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="3"></circle>
@@ -390,11 +324,11 @@
         </div>
       </div>
 
-      <!-- Preset Test Streams Bar -->
+      <!-- Preset Quick Test Streams Bar -->
       <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2 text-xs text-zinc-400">
           <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-          <span>Quick Test Streams:</span>
+          <span>Quick Streams:</span>
         </div>
         <div class="flex flex-wrap gap-2" id="sampleStreamsContainer">
           <button
@@ -419,127 +353,34 @@
       </div>
     </div>
 
-    <!-- RIGHT COLUMN: Video URL Form, Phone SRT Upload & Live Cue List (4 cols) -->
+    <!-- RIGHT COLUMN: Active Stream Info & Live Subtitle Transcript (4 cols) -->
     <div class="lg:col-span-4 flex flex-col gap-5">
 
-      <!-- Card 1: Direct Video Stream URL -->
-      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 shadow-lg">
-        <div class="flex items-center gap-2.5 mb-3">
-          <div class="p-2 rounded-lg bg-zinc-900 text-white border border-zinc-800">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-            </svg>
+      <!-- Active Status & Quick Action Card -->
+      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 shadow-lg flex items-center justify-between">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span class="text-xs font-semibold text-white">Stream Ready</span>
           </div>
-          <div>
-            <h2 class="text-sm font-semibold text-white">1. Direct Video URL</h2>
-            <p class="text-xs text-zinc-400">Input .mp4, .webm, or .m3u8 link</p>
-          </div>
+          <p id="activeSrtStatusLabel" class="text-xs text-zinc-400 truncate max-w-[210px]">
+            Subtitles: <span class="text-white font-medium">Sample_Subtitles.srt</span>
+          </p>
         </div>
-
-        <form id="urlForm" class="space-y-3">
-          <div class="relative">
-            <input
-              id="urlInput"
-              type="url"
-              required
-              placeholder="https://example.com/movie.mp4 or .m3u8"
-              value="https://archive.org/download/the-boondocks-complete/Season%201/The%20Boondocks%20-%20S01E01%20-%20The%20Garden%20Party.ia.mp4"
-              class="w-full bg-black border border-zinc-800 focus:border-white focus:ring-1 focus:ring-white rounded-xl px-3.5 py-2.5 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition pr-8"
-            />
-            <button
-              id="clearUrlBtn"
-              type="button"
-              class="
-                absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-200 text-xs
-              "
-              title="Clear URL"
-            >
-              ✕
-            </button>
-          </div>
-          <button
-            type="submit"
-            class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-zinc-200 active:bg-zinc-300 text-black font-semibold text-xs shadow-lg shadow-white/5 transition flex items-center justify-center gap-2"
-          >
-            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-              <polygon points="5 3 19 12 5 21 5 3"></polygon>
-            </svg>
-            Load & Play Video
-          </button>
-        </form>
-      </div>
-
-      <!-- Card 2: Upload SRT File from Phone / Device -->
-      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 shadow-lg">
-        <div class="flex items-center gap-2.5 mb-3">
-          <div class="p-2 rounded-lg bg-zinc-900 text-white border border-zinc-800">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-            </svg>
-          </div>
-          <div>
-            <h2 class="text-sm font-semibold text-white">2. Subtitle File (.srt / .vtt)</h2>
-            <p class="text-xs text-zinc-400">Choose file from your phone or PC</p>
-          </div>
-        </div>
-
-        <!-- Hidden Native File Picker -->
-        <input id="srtFileInput" type="file" accept=".srt,.vtt,text/plain" class="hidden" />
-
-        <!-- Mobile-friendly Upload Button -->
         <button
-          id="uploadTriggerBtn"
-          type="button"
-          class="w-full border-2 border-dashed border-zinc-800 hover:border-zinc-500 bg-black hover:bg-zinc-950 rounded-xl p-4 text-center transition group flex flex-col items-center justify-center gap-2"
+          id="openDrawerQuickBtn"
+          class="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white text-xs font-semibold flex items-center gap-1.5 transition"
         >
-          <div class="w-10 h-10 rounded-full bg-zinc-900 group-hover:bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-white transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
-          </div>
-          <div>
-            <p class="text-xs font-medium text-zinc-200 group-hover:text-white">
-              Tap to select <span class="text-white underline">.srt</span> file from device
-            </p>
-            <p class="text-[11px] text-zinc-500 mt-0.5">
-              Supports Android Storage, iOS Files & Desktop
-            </p>
-          </div>
+          <svg class="w-3.5 h-3.5 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          Configure
         </button>
-
-        <!-- File Info & Encoding Selector -->
-        <div class="mt-3 pt-3 border-t border-zinc-800 flex flex-col gap-2.5">
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-zinc-400 truncate max-w-[200px]">
-              Active: <strong id="srtFileNameLabel" class="text-zinc-200">Sample_Subtitles.srt</strong>
-            </span>
-            <button id="clearSrtBtn" class="text-zinc-400 hover:text-white underline text-[11px] font-medium">
-              Clear
-            </button>
-          </div>
-
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-zinc-400">Encoding:</span>
-            <select
-              id="encodingSelect"
-              class="bg-black border border-zinc-800 rounded-lg px-2.5 py-1 text-xs text-zinc-200 outline-none focus:border-white"
-            >
-              <option value="UTF-8">UTF-8 (Universal / Myanmar / Asian)</option>
-              <option value="Windows-1252">Windows-1252 (Western)</option>
-              <option value="ISO-8859-1">ISO-8859-1 (Latin)</option>
-            </select>
-          </div>
-        </div>
       </div>
 
-      <!-- Card 3: Interactive Live Subtitle Transcript -->
-      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 shadow-lg flex-1 flex flex-col max-h-[340px]">
+      <!-- Interactive Subtitle Transcript -->
+      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 shadow-lg flex-1 flex flex-col min-h-[360px] max-h-[580px]">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-sm font-semibold text-white">Interactive Subtitle Track</h3>
           <span class="text-[11px] text-zinc-400">Tap line to jump</span>
@@ -550,6 +391,220 @@
 
     </div>
   </main>
+
+  <!-- ========================================== -->
+  <!-- SETTINGS & CONFIGURATION BOTTOM SHEET      -->
+  <!-- ========================================== -->
+  <div id="bottomSheetBackdrop" class="bottom-sheet-backdrop fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-end justify-center transition-all">
+    <div
+      id="bottomSheetPanel"
+      class="bottom-sheet-panel w-full max-w-2xl bg-zinc-950 border-t sm:border-x sm:border-t border-zinc-800 rounded-t-3xl shadow-2xl flex flex-col max-h-[85vh] sm:max-h-[80vh] overflow-hidden"
+    >
+      <!-- Bottom Sheet Drag Handle & Header -->
+      <div class="pt-3 pb-3 px-6 border-b border-zinc-800/80 bg-zinc-950 flex flex-col gap-2">
+        <div class="w-12 h-1 bg-zinc-700 rounded-full mx-auto cursor-pointer" id="drawerDragHandle"></div>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-bold text-white">Settings &amp; Configuration</h2>
+            <span class="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">Drawer</span>
+          </div>
+          <button id="closeBottomSheetBtn" class="p-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Navigation Tabs inside Bottom Sheet -->
+        <div class="flex items-center gap-1.5 pt-1 overflow-x-auto">
+          <button id="tabSheetSubtitles" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-black transition shrink-0">
+            Subtitle Style
+          </button>
+          <button id="tabSheetInput" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition shrink-0">
+            Video &amp; File Input
+          </button>
+          <button id="tabSheetSpeed" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition shrink-0">
+            Speed (<span id="sheetSpeedLabel">1x</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom Sheet Scrollable Body -->
+      <div class="p-6 overflow-y-auto space-y-6 custom-scroll flex-1">
+
+        <!-- TAB 1: Subtitle Styling & Timing -->
+        <div id="sheetSectionSubtitles" class="space-y-4">
+          <!-- Font Size -->
+          <div class="bg-black border border-zinc-800/80 rounded-2xl p-4">
+            <div class="flex justify-between text-xs text-zinc-300 mb-2">
+              <span class="font-medium">Font Size</span>
+              <span id="fontSizeVal" class="font-mono text-white font-semibold">20px</span>
+            </div>
+            <input id="fontSizeSlider" type="range" min="12" max="40" value="20" class="w-full h-1.5" />
+          </div>
+
+          <!-- Subtitle Sync Delay -->
+          <div class="bg-black border border-zinc-800/80 rounded-2xl p-4">
+            <div class="flex justify-between text-xs text-zinc-300 mb-2">
+              <span class="font-medium">Subtitle Sync Delay</span>
+              <span id="subDelayVal" class="font-mono text-white font-semibold">0.0s</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="delayMinusBtn" class="flex-1 py-2 bg-zinc-900 hover:bg-zinc-800 rounded-xl border border-zinc-800 text-zinc-200 text-xs font-medium transition">
+                - 0.5s
+              </button>
+              <button id="delayResetBtn" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 rounded-xl border border-zinc-800 text-zinc-300 text-xs font-medium transition">
+                Reset
+              </button>
+              <button id="delayPlusBtn" class="flex-1 py-2 bg-zinc-900 hover:bg-zinc-800 rounded-xl border border-zinc-800 text-zinc-200 text-xs font-medium transition">
+                + 0.5s
+              </button>
+            </div>
+          </div>
+
+          <!-- Bottom Position & Background Dim -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="bg-black border border-zinc-800/80 rounded-2xl p-4">
+              <div class="flex justify-between text-xs text-zinc-300 mb-2">
+                <span class="font-medium">Bottom Position</span>
+                <span id="bottomPosVal" class="font-mono text-white font-semibold">12%</span>
+              </div>
+              <input id="bottomPosSlider" type="range" min="4" max="45" value="12" class="w-full h-1.5" />
+            </div>
+
+            <div class="bg-black border border-zinc-800/80 rounded-2xl p-4">
+              <div class="flex justify-between text-xs text-zinc-300 mb-2">
+                <span class="font-medium">Background Dim</span>
+                <span id="bgOpacityVal" class="font-mono text-white font-semibold">75%</span>
+              </div>
+              <input id="bgOpacitySlider" type="range" min="0" max="1" step="0.05" value="0.75" class="w-full h-1.5" />
+            </div>
+          </div>
+
+          <!-- Text Color Swatches -->
+          <div class="bg-black border border-zinc-800/80 rounded-2xl p-4 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-medium text-white block">Subtitle Text Color</span>
+              <span class="text-[11px] text-zinc-400">Select monochrome shade</span>
+            </div>
+            <div class="flex items-center gap-2" id="colorSwatches">
+              <button data-color="#FFFFFF" class="w-6 h-6 rounded-full border-2 border-white scale-110 transition" style="background-color: #FFFFFF;"></button>
+              <button data-color="#D4D4D8" class="w-6 h-6 rounded-full border-2 border-transparent transition" style="background-color: #D4D4D8;"></button>
+              <button data-color="#A1A1AA" class="w-6 h-6 rounded-full border-2 border-transparent transition" style="background-color: #A1A1AA;"></button>
+              <button data-color="#71717A" class="w-6 h-6 rounded-full border-2 border-transparent transition" style="background-color: #71717A;"></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Video URL & SRT File Upload Form -->
+        <div id="sheetSectionInput" class="hidden space-y-4">
+          <!-- Direct Video URL -->
+          <div class="bg-black border border-zinc-800/80 rounded-2xl p-4">
+            <h3 class="text-xs font-semibold text-white mb-1">Direct Video URL</h3>
+            <p class="text-[11px] text-zinc-400 mb-3">Input .mp4, .webm, or .m3u8 link</p>
+
+            <form id="urlForm" class="space-y-3">
+              <div class="relative">
+                <input
+                  id="urlInput"
+                  type="url"
+                  required
+                  placeholder="https://example.com/video.mp4 or .m3u8"
+                  value="https://archive.org/download/the-boondocks-complete/Season%201/The%20Boondocks%20-%20S01E01%20-%20The%20Garden%20Party.ia.mp4"
+                  class="w-full bg-zinc-950 border border-zinc-800 focus:border-white focus:ring-1 focus:ring-white rounded-xl px-3.5 py-2.5 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition pr-8"
+                />
+                <button
+                  id="clearUrlBtn"
+                  type="button"
+                  class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-200 text-xs"
+                  title="Clear URL"
+                >
+                  ✕
+                </button>
+              </div>
+              <button
+                type="submit"
+                class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-zinc-200 active:bg-zinc-300 text-black font-semibold text-xs shadow-lg shadow-white/5 transition flex items-center justify-center gap-2"
+              >
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                Load &amp; Play Video Stream
+              </button>
+            </form>
+          </div>
+
+          <!-- SRT File Upload -->
+          <div class="bg-black border border-zinc-800/80 rounded-2xl p-4">
+            <h3 class="text-xs font-semibold text-white mb-1">Subtitle File (.srt / .vtt)</h3>
+            <p class="text-[11px] text-zinc-400 mb-3">Select directly from mobile storage or desktop</p>
+
+            <input id="srtFileInput" type="file" accept=".srt,.vtt,text/plain" class="hidden" />
+
+            <button
+              id="uploadTriggerBtn"
+              type="button"
+              class="w-full border-2 border-dashed border-zinc-800 hover:border-zinc-500 bg-zinc-950 rounded-xl p-4 text-center transition group flex flex-col items-center justify-center gap-2"
+            >
+              <div class="w-10 h-10 rounded-full bg-zinc-900 group-hover:bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <p class="text-xs font-medium text-zinc-200 group-hover:text-white">
+                Tap to pick <span class="text-white underline">.srt</span> file from phone
+              </p>
+            </button>
+
+            <div class="mt-3 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-xs">
+              <span class="text-zinc-400 truncate max-w-[200px]">
+                Active: <strong id="srtFileNameLabel" class="text-zinc-200">Sample_Subtitles.srt</strong>
+              </span>
+              <button id="clearSrtBtn" class="text-zinc-400 hover:text-white underline text-[11px] font-medium">
+                Clear
+              </button>
+            </div>
+
+            <!-- Encoding Selector -->
+            <div class="mt-2.5 flex items-center justify-between text-xs">
+              <span class="text-zinc-400">Encoding:</span>
+              <select
+                id="encodingSelect"
+                class="bg-zinc-950 border border-zinc-800 rounded-lg px-2.5 py-1 text-xs text-zinc-200 outline-none focus:border-white"
+              >
+                <option value="UTF-8">UTF-8 (Universal / Myanmar / Asian)</option>
+                <option value="Windows-1252">Windows-1252 (Western)</option>
+                <option value="ISO-8859-1">ISO-8859-1 (Latin)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Playback Speed -->
+        <div id="sheetSectionSpeed" class="hidden">
+          <div class="grid grid-cols-3 gap-2.5">
+            <button data-speed="0.5" class="speed-btn py-3 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition text-xs">0.5x</button>
+            <button data-speed="0.75" class="speed-btn py-3 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition text-xs">0.75x</button>
+            <button data-speed="1" class="speed-btn py-3 rounded-xl font-medium border bg-white border-white text-black font-semibold transition text-xs">1x Normal</button>
+            <button data-speed="1.25" class="speed-btn py-3 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition text-xs">1.25x</button>
+            <button data-speed="1.5" class="speed-btn py-3 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition text-xs">1.5x</button>
+            <button data-speed="2" class="speed-btn py-3 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition text-xs">2x</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Sheet Done / Close Footer Button -->
+      <div class="p-4 bg-zinc-950 border-t border-zinc-800/80">
+        <button id="sheetDoneBtn" class="w-full py-2.5 rounded-xl bg-white hover:bg-zinc-200 text-black text-xs font-semibold transition">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Pure Vanilla JavaScript Application Logic -->
   <script>
@@ -614,16 +669,28 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
     const ccToggleBtn = document.getElementById('ccToggleBtn');
     const ccToggleText = document.getElementById('ccToggleText');
     const settingsBtn = document.getElementById('settingsBtn');
-    const settingsMenu = document.getElementById('settingsMenu');
-    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+    const headerSettingsBtn = document.getElementById('headerSettingsBtn');
+    const openDrawerQuickBtn = document.getElementById('openDrawerQuickBtn');
     const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-    // Settings Menu Elements
-    const tabSubtitlesBtn = document.getElementById('tabSubtitlesBtn');
-    const tabSpeedBtn = document.getElementById('tabSpeedBtn');
-    const subtitlesPanel = document.getElementById('subtitlesPanel');
-    const speedPanel = document.getElementById('speedPanel');
-    const speedTabLabel = document.getElementById('speedTabLabel');
+    // Bottom Sheet Elements
+    const bottomSheetBackdrop = document.getElementById('bottomSheetBackdrop');
+    const bottomSheetPanel = document.getElementById('bottomSheetPanel');
+    const closeBottomSheetBtn = document.getElementById('closeBottomSheetBtn');
+    const sheetDoneBtn = document.getElementById('sheetDoneBtn');
+    const drawerDragHandle = document.getElementById('drawerDragHandle');
+
+    // Bottom Sheet Tab Navigation Elements
+    const tabSheetSubtitles = document.getElementById('tabSheetSubtitles');
+    const tabSheetInput = document.getElementById('tabSheetInput');
+    const tabSheetSpeed = document.getElementById('tabSheetSpeed');
+    const sheetSectionSubtitles = document.getElementById('sheetSectionSubtitles');
+    const sheetSectionInput = document.getElementById('sheetSectionInput');
+    const sheetSectionSpeed = document.getElementById('sheetSectionSpeed');
+    const sheetSpeedLabel = document.getElementById('sheetSpeedLabel');
+    const activeSrtStatusLabel = document.getElementById('activeSrtStatusLabel');
+
+    // Subtitle Customization Inputs inside Bottom Sheet
     const fontSizeSlider = document.getElementById('fontSizeSlider');
     const fontSizeVal = document.getElementById('fontSizeVal');
     const subDelayVal = document.getElementById('subDelayVal');
@@ -636,7 +703,7 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
     const bgOpacityVal = document.getElementById('bgOpacityVal');
     const colorSwatches = document.getElementById('colorSwatches');
 
-    // Sidebar Inputs
+    // Inputs inside Bottom Sheet
     const urlForm = document.getElementById('urlForm');
     const urlInput = document.getElementById('urlInput');
     const clearUrlBtn = document.getElementById('clearUrlBtn');
@@ -647,6 +714,63 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
     const encodingSelect = document.getElementById('encodingSelect');
     const transcriptContainer = document.getElementById('transcriptContainer');
     const cueCountBadge = document.getElementById('cueCountBadge');
+
+    // Bottom Sheet Open / Close Helpers
+    function openBottomSheet(tab = "subtitles") {
+      switchSheetTab(tab);
+      bottomSheetBackdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeBottomSheet() {
+      bottomSheetBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function switchSheetTab(tab) {
+      // Reset all tab styling
+      tabSheetSubtitles.className = "px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition shrink-0";
+      tabSheetInput.className = "px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition shrink-0";
+      tabSheetSpeed.className = "px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition shrink-0";
+
+      // Hide all panels
+      sheetSectionSubtitles.classList.add('hidden');
+      sheetSectionInput.classList.add('hidden');
+      sheetSectionSpeed.classList.add('hidden');
+
+      if (tab === "input") {
+        tabSheetInput.className = "px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-black transition shrink-0";
+        sheetSectionInput.classList.remove('hidden');
+      } else if (tab === "speed") {
+        tabSheetSpeed.className = "px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-black transition shrink-0";
+        sheetSectionSpeed.classList.remove('hidden');
+      } else {
+        tabSheetSubtitles.className = "px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-black transition shrink-0";
+        sheetSectionSubtitles.classList.remove('hidden');
+      }
+    }
+
+    // Attach Bottom Sheet Trigger Listeners
+    settingsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openBottomSheet("subtitles");
+    });
+    headerSettingsBtn.addEventListener('click', () => openBottomSheet("subtitles"));
+    openDrawerQuickBtn.addEventListener('click', () => openBottomSheet("input"));
+
+    closeBottomSheetBtn.addEventListener('click', closeBottomSheet);
+    sheetDoneBtn.addEventListener('click', closeBottomSheet);
+    drawerDragHandle.addEventListener('click', closeBottomSheet);
+
+    bottomSheetBackdrop.addEventListener('click', (e) => {
+      if (e.target === bottomSheetBackdrop) {
+        closeBottomSheet();
+      }
+    });
+
+    tabSheetSubtitles.addEventListener('click', () => switchSheetTab("subtitles"));
+    tabSheetInput.addEventListener('click', () => switchSheetTab("input"));
+    tabSheetSpeed.addEventListener('click', () => switchSheetTab("speed"));
 
     // Helper: Parse SRT timestamp (00:01:20,400) to seconds
     function parseTime(timeStr) {
@@ -888,7 +1012,7 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
       controlsBar.classList.remove('opacity-0', 'pointer-events-none');
       clearTimeout(controlsTimeout);
       controlsTimeout = setTimeout(() => {
-        if (!video.paused && settingsMenu.classList.contains('hidden')) {
+        if (!video.paused && !bottomSheetBackdrop.classList.contains('active')) {
           controlsBar.classList.add('opacity-0', 'pointer-events-none');
         }
       }, 3000);
@@ -985,28 +1109,7 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
       updateSubtitlesOverlay();
     });
 
-    // Settings Menu & Tabs
-    settingsBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      settingsMenu.classList.toggle('hidden');
-    });
-    closeSettingsBtn.addEventListener('click', () => settingsMenu.classList.add('hidden'));
-
-    tabSubtitlesBtn.addEventListener('click', () => {
-      subtitlesPanel.classList.remove('hidden');
-      speedPanel.classList.add('hidden');
-      tabSubtitlesBtn.className = "px-2.5 py-1 rounded-lg font-medium bg-white text-black transition";
-      tabSpeedBtn.className = "px-2.5 py-1 rounded-lg font-medium text-zinc-400 hover:text-white transition";
-    });
-
-    tabSpeedBtn.addEventListener('click', () => {
-      speedPanel.classList.remove('hidden');
-      subtitlesPanel.classList.add('hidden');
-      tabSpeedBtn.className = "px-2.5 py-1 rounded-lg font-medium bg-white text-black transition";
-      tabSubtitlesBtn.className = "px-2.5 py-1 rounded-lg font-medium text-zinc-400 hover:text-white transition";
-    });
-
-    // Subtitle Customization Controls
+    // Subtitle Customization Controls inside Bottom Sheet
     fontSizeSlider.addEventListener('input', (e) => {
       subFontSize = Number(e.target.value);
       fontSizeVal.textContent = `${subFontSize}px`;
@@ -1059,18 +1162,18 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
       });
     });
 
-    // Speed Controls
+    // Speed Controls inside Bottom Sheet
     document.querySelectorAll('.speed-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const speed = parseFloat(btn.dataset.speed);
         video.playbackRate = speed;
-        speedTabLabel.textContent = `${speed}x`;
+        sheetSpeedLabel.textContent = `${speed}x`;
         document.querySelectorAll('.speed-btn').forEach((b) => {
           b.className =
-            'speed-btn py-2 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition';
+            'speed-btn py-3 rounded-xl font-medium border bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 transition text-xs';
         });
         btn.className =
-          'speed-btn py-2 rounded-xl font-medium border bg-white border-white text-black transition';
+          'speed-btn py-3 rounded-xl font-semibold border bg-white border-white text-black transition text-xs';
       });
     });
 
@@ -1144,7 +1247,10 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
     urlForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const url = urlInput.value.trim();
-      if (url) loadVideoSource(url);
+      if (url) {
+        loadVideoSource(url);
+        closeBottomSheet();
+      }
     });
 
     clearUrlBtn.addEventListener('click', () => {
@@ -1173,6 +1279,7 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
       if (!file) return;
       rawSrtFile = file;
       srtFileNameLabel.textContent = file.name;
+      activeSrtStatusLabel.innerHTML = `Subtitles: <span class="text-white font-medium">${file.name}</span>`;
       readSrtFile(file);
     });
 
@@ -1185,6 +1292,7 @@ Tap any subtitle line on the right panel to jump directly to that timestamp.`;
       rawSrtFile = null;
       srtFileInput.value = '';
       srtFileNameLabel.textContent = 'None';
+      activeSrtStatusLabel.innerHTML = 'Subtitles: <span class="text-zinc-500">None</span>';
       syncNativeVttTrack();
       renderTranscript();
       updateSubtitlesOverlay();
