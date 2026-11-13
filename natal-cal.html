@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmyday Natal Chart Explorer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Markdown Parser & Sanitizer -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['CustomFont', 'sans-serif'],
+                        display: ['CustomFont', 'sans-serif'],
+                    },
+                    colors: {
+                        cosmic: {
+                            950: '#090a0f',
+                            900: '#121521',
+                            800: '#1c2033',
+                            700: '#2a304d',
+                            accent: '#8b5cf6',
+                            gold: '#f59e0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('https://raw.githack.com/winminhtetz/JsonFiles/main/fonts/font-regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('https://raw.githack.com/winminhtetz/JsonFiles/main/fonts/font-bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+        body {
+            font-family: 'CustomFont', sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #090a0f);
+            min-height: 100vh;
+        }
+        /* Custom scrollbar for JSON viewer */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.8);
+        }
+        .glass-card {
+            background: rgba(18, 21, 33, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        input[type="date"],
+        input[type="time"] {
+            color-scheme: dark;
+        }
+        /* Rich Markdown Styling for AI Astrologer Output */
+        .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 1rem;
+            margin-bottom: 0.45rem;
+            line-height: 1.35;
+        }
+        .markdown-body h1 { font-size: 1.25rem; color: #ddd6fe; }
+        .markdown-body h2 { font-size: 1.1rem; color: #ddd6fe; }
+        .markdown-body h3 { font-size: 1rem; color: #fde68a; }
+        .markdown-body h4 { font-size: 0.925rem; color: #c4b5fd; }
+        .markdown-body > *:first-child { margin-top: 0; }
+        .markdown-body > *:last-child { margin-bottom: 0; }
+        .markdown-body p {
+            margin-bottom: 0.75rem;
+            line-height: 1.65;
+        }
+        .markdown-body strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+        .markdown-body em {
+            color: #ddd6fe;
+            font-style: italic;
+        }
+        .markdown-body ul {
+            list-style-type: disc;
+            padding-left: 1.35rem;
+            margin-bottom: 0.75rem;
+        }
+        .markdown-body ol {
+            list-style-type: decimal;
+            padding-left: 1.35rem;
+            margin-bottom: 0.75rem;
+        }
+        .markdown-body li {
+            margin-bottom: 0.35rem;
+            line-height: 1.6;
+        }
+        .markdown-body li::marker {
+            color: #a78bfa;
+        }
+        .markdown-body blockquote {
+            border-left: 3px solid #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+            padding: 0.5rem 0.85rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin-bottom: 0.75rem;
+            color: #e2e8f0;
+        }
+        .markdown-body code {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            color: #fcd34d;
+            padding: 0.1rem 0.35rem;
+            border-radius: 0.35rem;
+            font-size: 0.825em;
+        }
+        .markdown-body hr {
+            border-color: rgba(255, 255, 255, 0.1);
+            margin: 1rem 0;
+        }
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0.85rem;
+            font-size: 0.825rem;
+        }
+        .markdown-body th, .markdown-body td {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 0.45rem 0.65rem;
+            text-align: left;
+        }
+        .markdown-body th {
+            background: rgba(139, 92, 246, 0.18);
+            color: #ffffff;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="text-slate-200 font-sans antialiased selection:bg-violet-500 selection:text-white pb-12">
+
+    <!-- Top Navigation / Header -->
+    <header class="border-b border-white/10 bg-slate-950/50 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-amber-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                    <i class="fa-solid fa-star-and-crescent text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-lg tracking-wide text-white leading-none">Cosmyday</h1>
+                    <span class="text-xs text-violet-400">Natal Chart Calculator</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button id="fillDefaultBtn" class="text-xs sm:text-sm px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-center gap-2 text-slate-300">
+                    <i class="fa-solid fa-rotate-left text-violet-400"></i>
+                    <span>Reset to Default</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        
+        <!-- Notification Toast (Hidden by default) -->
+        <div id="toast" class="fixed bottom-5 right-5 z-50 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none">
+            <div class="bg-slate-900 border border-violet-500/40 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3">
+                <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+                <span id="toastMsg" class="text-sm font-medium">Action successful!</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Column: Input Form (5 cols on lg) -->
+            <div id="inputColumn" class="lg:col-span-5 space-y-6 transition-all duration-300">
+                
+                <!-- User Input Card -->
+                <div class="glass-card rounded-2xl p-6 shadow-xl">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-lg font-display font-bold text-white flex items-center gap-2">
+                            <i class="fa-regular fa-compass text-violet-400"></i>
+                            Birth Details
+                        </h2>
+                        <span class="text-xs bg-violet-500/10 text-violet-300 border border-violet-500/20 px-2.5 py-1 rounded-full">
+                            Natal Profile
+                        </span>
+                    </div>
+
+                    <form id="natalForm" class="space-y-5">
+                        <!-- Date & Time Pickers -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="birthDate" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                                    <i class="fa-regular fa-calendar text-violet-400 mr-1"></i> Birth Date
+                                </label>
+                                <input type="date" id="birthDate" name="birthDate" value="1990-06-15" min="1800-01-01" max="2100-12-31" required
+                                    class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition cursor-pointer">
+                            </div>
+
+                            <div>
+                                <label for="birthTime" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                                    <i class="fa-regular fa-clock text-violet-400 mr-1"></i> Birth Time
+                                </label>
+                                <input type="time" id="birthTime" name="birthTime" value="14:30" required
+                                    class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition cursor-pointer">
+                            </div>
+                        </div>
+
+                        <!-- Coordinates: Lat, Lon + Presets -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                                    Location & Coordinates
+                                </label>
+                                <button type="button" id="geoBtn" class="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1 transition">
+                                    <i class="fa-solid fa-location-crosshairs"></i> Use My Location
+                                </button>
+                            </div>
+
+                            <!-- Location Search Input (GET /search-location) -->
+                            <div class="relative mb-3">
+                                <div class="flex gap-2">
+                                    <div class="relative flex-1">
+                                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                                        <input type="text" id="locationSearchInput" placeholder="Search city (e.g. New York, Paris)..."
+                                            autocomplete="off"
+                                            class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-9 pr-8 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition">
+                                        <button type="button" id="clearSearchBtn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </div>
+                                    <button type="button" id="searchLocationBtn"
+                                        class="px-3.5 py-2 rounded-xl bg-violet-600/20 hover:bg-violet-600/40 border border-violet-500/30 text-violet-300 text-xs font-medium transition flex items-center gap-1.5 shrink-0">
+                                        <i id="searchBtnIcon" class="fa-solid fa-search"></i>
+                                        <span>Search</span>
+                                    </button>
+                                </div>
+
+                                <!-- Selected Location Badge -->
+                                <div id="selectedLocationBadge" class="hidden mt-2 flex items-center justify-between bg-violet-500/10 border border-violet-500/20 rounded-lg px-3 py-1.5 text-xs text-violet-200">
+                                    <span class="flex items-center gap-1.5 truncate">
+                                        <i class="fa-solid fa-location-dot text-violet-400"></i>
+                                        <span id="selectedLocationText" class="truncate font-medium">New York</span>
+                                    </span>
+                                    <span class="text-[10px] font-mono text-violet-400 ml-2 shrink-0">Selected</span>
+                                </div>
+
+                                <!-- Dropdown Results List -->
+                                <div id="locationDropdown" class="hidden absolute z-40 left-0 right-0 mt-1.5 bg-slate-900/95 backdrop-blur-xl border border-slate-700 rounded-xl shadow-2xl max-h-60 overflow-y-auto divide-y divide-slate-800/80">
+                                    <!-- Dynamically populated search results -->
+                                </div>
+                            </div>
+
+                            <!-- Quick City Presets -->
+                            <div class="flex flex-wrap gap-1.5 mb-3">
+                                <button type="button" data-lat="40.7128" data-lon="-74.006" class="city-preset text-xs bg-slate-800/80 hover:bg-violet-600/30 border border-slate-700 hover:border-violet-500/50 rounded-lg px-2.5 py-1 text-slate-300 transition">
+                                    🗽 New York
+                                </button>
+                                <button type="button" data-lat="51.5074" data-lon="-0.1278" class="city-preset text-xs bg-slate-800/80 hover:bg-violet-600/30 border border-slate-700 hover:border-violet-500/50 rounded-lg px-2.5 py-1 text-slate-300 transition">
+                                    🎡 London
+                                </button>
+                                <button type="button" data-lat="35.6762" data-lon="139.6503" class="city-preset text-xs bg-slate-800/80 hover:bg-violet-600/30 border border-slate-700 hover:border-violet-500/50 rounded-lg px-2.5 py-1 text-slate-300 transition">
+                                    🗼 Tokyo
+                                </button>
+                                <button type="button" data-lat="16.8409" data-lon="96.1735" class="city-preset text-xs bg-slate-800/80 hover:bg-violet-600/30 border border-slate-700 hover:border-violet-500/50 rounded-lg px-2.5 py-1 text-slate-300 transition">
+                                    ✨ Yangon
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="lat" class="block text-xs text-slate-400 mb-1">Latitude</label>
+                                    <input type="number" id="lat" name="lat" value="40.7128" step="any" min="-90" max="90" required
+                                        class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition">
+                                </div>
+                                <div>
+                                    <label for="lon" class="block text-xs text-slate-400 mb-1">Longitude</label>
+                                    <input type="number" id="lon" name="lon" value="-74.006" step="any" min="-180" max="180" required
+                                        class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="submitBtn"
+                            class="w-full py-3 px-5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium text-sm shadow-lg shadow-violet-600/25 hover:shadow-violet-600/40 transition flex items-center justify-center gap-2">
+                            <i id="btnIcon" class="fa-solid fa-paper-plane"></i>
+                            <span id="btnText">Calculate Natal Chart</span>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Visual Output (7 cols on lg, expands to 12 when input is hidden) -->
+            <div id="outputColumn" class="lg:col-span-7 space-y-6 transition-all duration-300">
+                
+                <div class="glass-card rounded-2xl p-6 shadow-xl min-h-[520px] flex flex-col">
+                    <!-- Output Header -->
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4 mb-5">
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-lg font-display font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-star text-amber-400"></i>
+                                Your Natal Chart
+                            </h2>
+                        </div>
+                        <button type="button" id="editBirthInfoBtn" class="hidden text-xs sm:text-sm px-3.5 py-1.5 rounded-xl bg-violet-600/20 hover:bg-violet-600/40 border border-violet-500/30 text-violet-200 font-medium transition flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-violet-400"></i>
+                            <span>Edit Birth Details</span>
+                        </button>
+                    </div>
+
+                    <!-- Initial Empty / Ready State -->
+                    <div id="emptyState" class="flex-1 flex flex-col items-center justify-center text-center py-16 px-4">
+                        <div class="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mb-4 text-violet-400">
+                            <i class="fa-solid fa-wand-magic-sparkles text-2xl"></i>
+                        </div>
+                        <h3 class="text-base font-semibold text-white mb-1">Discover Your Natal Chart</h3>
+                        <p class="text-sm text-slate-400 max-w-md mb-6">
+                            Enter your birth date, time, and location on the left, then click <span class="text-violet-300 font-medium">Calculate Natal Chart</span> to view your celestial placements.
+                        </p>
+                        <button id="quickRunBtn" class="text-xs px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-violet-300 transition flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Try with Sample Birth Data
+                        </button>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingState" class="hidden flex-1 flex flex-col items-center justify-center text-center py-16">
+                        <div class="w-12 h-12 border-4 border-violet-500/30 border-t-violet-500 rounded-full animate-spin mb-4"></div>
+                        <p class="text-sm font-medium text-white">Calculating your natal chart...</p>
+                        <p class="text-xs text-slate-400 mt-1">Mapping planetary positions & houses</p>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="errorState" class="hidden rounded-xl bg-rose-950/40 border border-rose-500/40 p-5 mb-4">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-triangle-exclamation text-rose-400 text-lg mt-0.5"></i>
+                            <div class="flex-1">
+                                <h4 id="errorTitle" class="text-sm font-semibold text-rose-200">Unable to Calculate Chart</h4>
+                                <p id="errorDesc" class="text-xs text-rose-300/90 mt-1 leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Content Container -->
+                    <div id="visualView" class="hidden flex-1 space-y-5 overflow-y-auto max-h-[680px] pr-1">
+                        <!-- Dynamically populated user-friendly natal chart -->
+                    </div>
+
+                    <!-- Ask Gemini AI Section (Shown when natal chart is ready) -->
+                    <div id="aiQuestionSection" class="hidden mt-6 pt-6 border-t border-white/10 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-base font-display font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-sparkles text-violet-400"></i>
+                                Ask AI Astrologer
+                            </h3>
+                            <span class="text-[11px] bg-violet-500/15 text-violet-300 border border-violet-500/30 px-2.5 py-0.5 rounded-full">
+                                Powered by Gemini
+                            </span>
+                        </div>
+
+                        <!-- Quick Suggested Questions -->
+                        <div class="flex flex-wrap gap-1.5">
+                            <button type="button" class="ai-suggestion-btn text-xs bg-slate-800/80 hover:bg-violet-600/30 border border-slate-700 hover:border-violet-500/50 rounded-lg px-2.5 py-1 text-slate-300 transition">
+                                ✨ Summarize my Big Three (Sun, Moon, Rising)
+                            </button>
+                            <button type="button" class="ai-suggestion-btn text-xs bg-slate-800/80 hover:bg-violet-600/30 border border-slate-700 hover:border-violet-500/50 rounded-lg px-2.5 py-1 text-slate-300 transition">
+                                💼 What career paths suit my chart?
+                            </button>
+                            <button type="button" class="ai-suggestion-btn text-xs bg-slate-800/80 hover:bg-violet-600/30 border border-slate-700 hover:border-violet-500/50 rounded-lg px-2.5 py-1 text-slate-300 transition">
+                                💖 Love & relationship strengths
+                            </button>
+                        </div>
+
+                        <!-- Question Input Form -->
+                        <form id="aiQuestionForm" class="flex flex-col sm:flex-row gap-2.5">
+                            <input type="text" id="aiQuestionInput" placeholder="Ask anything about your natal chart (e.g., What does my Moon sign say about me?)..." required
+                                class="flex-1 bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition">
+                            <button type="submit" id="askAiBtn"
+                                class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-medium text-sm shadow-lg shadow-violet-600/25 transition flex items-center justify-center gap-2 shrink-0">
+                                <i id="askAiIcon" class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span id="askAiText">Ask Gemini</span>
+                            </button>
+                        </form>
+
+                        <!-- AI Loading Indicator -->
+                        <div id="aiLoadingBox" class="hidden rounded-xl bg-slate-900/70 border border-violet-500/20 p-4 flex items-center gap-3">
+                            <div class="w-5 h-5 border-2 border-violet-500/30 border-t-violet-400 rounded-full animate-spin shrink-0"></div>
+                            <span class="text-xs text-slate-300">Gemini is reading your planetary alignments...</span>
+                        </div>
+
+                        <!-- AI Answer Box -->
+                        <div id="aiAnswerBox" class="hidden rounded-xl bg-gradient-to-br from-violet-950/50 via-slate-900/90 to-indigo-950/40 border border-violet-500/30 p-5 space-y-2.5">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                                <span class="text-xs font-semibold text-violet-300 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-moon text-amber-400"></i>
+                                    <span id="aiQuestionEcho" class="truncate max-w-md">Astrological Insight</span>
+                                </span>
+                                <button type="button" id="copyAiAnswerBtn" class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1">
+                                    <i class="fa-regular fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <div id="aiAnswerContent" class="markdown-body text-sm text-slate-200 leading-relaxed"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- DOM Elements ---
+        const form = document.getElementById('natalForm');
+        const inputs = {
+            birthDate: document.getElementById('birthDate'),
+            birthTime: document.getElementById('birthTime'),
+            lat: document.getElementById('lat'),
+            lon: document.getElementById('lon')
+        };
+
+        const submitBtn = document.getElementById('submitBtn');
+        const btnIcon = document.getElementById('btnIcon');
+        const btnText = document.getElementById('btnText');
+
+        const emptyState = document.getElementById('emptyState');
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const errorTitle = document.getElementById('errorTitle');
+        const errorDesc = document.getElementById('errorDesc');
+
+        const visualView = document.getElementById('visualView');
+        const inputColumn = document.getElementById('inputColumn');
+        const outputColumn = document.getElementById('outputColumn');
+        const editBirthInfoBtn = document.getElementById('editBirthInfoBtn');
+
+        // AI Question Box DOM Elements
+        const aiQuestionSection = document.getElementById('aiQuestionSection');
+        const aiQuestionForm = document.getElementById('aiQuestionForm');
+        const aiQuestionInput = document.getElementById('aiQuestionInput');
+        const askAiBtn = document.getElementById('askAiBtn');
+        const askAiIcon = document.getElementById('askAiIcon');
+        const askAiText = document.getElementById('askAiText');
+        const aiLoadingBox = document.getElementById('aiLoadingBox');
+        const aiAnswerBox = document.getElementById('aiAnswerBox');
+        const aiQuestionEcho = document.getElementById('aiQuestionEcho');
+        const aiAnswerContent = document.getElementById('aiAnswerContent');
+        const copyAiAnswerBtn = document.getElementById('copyAiAnswerBtn');
+
+        let currentNatalData = null;
+
+        // --- Helper: Toggle Birth Input Visibility ---
+        function setBirthInputVisible(visible) {
+            if (visible) {
+                inputColumn.classList.remove('hidden');
+                outputColumn.classList.remove('lg:col-span-12');
+                outputColumn.classList.add('lg:col-span-7');
+                editBirthInfoBtn.classList.add('hidden');
+            } else {
+                inputColumn.classList.add('hidden');
+                outputColumn.classList.remove('lg:col-span-7');
+                outputColumn.classList.add('lg:col-span-12');
+                editBirthInfoBtn.classList.remove('hidden');
+            }
+        }
+
+        editBirthInfoBtn.addEventListener('click', () => {
+            setBirthInputVisible(true);
+        });
+
+        // Location Search DOM Elements
+        const locationSearchInput = document.getElementById('locationSearchInput');
+        const searchLocationBtn = document.getElementById('searchLocationBtn');
+        const searchBtnIcon = document.getElementById('searchBtnIcon');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        const locationDropdown = document.getElementById('locationDropdown');
+        const selectedLocationBadge = document.getElementById('selectedLocationBadge');
+        const selectedLocationText = document.getElementById('selectedLocationText');
+
+        const API_URL = 'https://api.cosmyday.com/natal';
+        const SEARCH_API_URL = 'https://api.cosmyday.com/search-location';
+        let searchDebounceTimer = null;
+
+        // --- Helper: Fetch with Automatic CORS Proxy Fallback ---
+        async function fetchWithCorsFallback(targetUrl, options = {}) {
+            // 1. Try direct fetch first
+            try {
+                const directRes = await fetch(targetUrl, options);
+                return { response: directRes };
+            } catch (directErr) {
+                // Continue to fallback proxy
+            }
+
+            // 2. Fallback to corsproxy.io
+            try {
+                const proxyUrl1 = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+                const res1 = await fetch(proxyUrl1, options);
+                return { response: res1 };
+            } catch (err1) {
+                // Continue to next fallback
+            }
+
+            // 3. If GET request, also try allorigins raw proxy
+            if (!options.method || options.method.toUpperCase() === 'GET') {
+                const proxyUrl2 = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+                const res2 = await fetch(proxyUrl2);
+                return { response: res2 };
+            }
+
+            throw new Error('Service temporarily unavailable. Please try again in a moment.');
+        }
+
+        // Default Values
+        const DEFAULT_PAYLOAD = {
+            birthDate: '1990-06-15',
+            birthTime: '14:30',
+            lat: 40.7128,
+            lon: -74.006
+        };
+
+        // --- Helper: Show Toast Notification ---
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.textContent = message;
+            toastIcon.className = isError 
+                ? 'fa-solid fa-circle-exclamation text-rose-400' 
+                : 'fa-solid fa-circle-check text-emerald-400';
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2800);
+        }
+
+        // --- Build Payload from Inputs ---
+        function getPayload() {
+            const dateVal = inputs.birthDate.value || '1990-06-15';
+            const timeVal = inputs.birthTime.value || '14:30';
+
+            const [yearStr, monthStr, dayStr] = dateVal.split('-');
+            const [hourStr, minuteStr] = timeVal.split(':');
+
+            return {
+                year: parseInt(yearStr, 10) || 1990,
+                month: parseInt(monthStr, 10) || 6,
+                day: parseInt(dayStr, 10) || 15,
+                hour: parseInt(hourStr, 10) || 0,
+                minute: parseInt(minuteStr, 10) || 0,
+                lat: parseFloat(inputs.lat.value) || 0,
+                lon: parseFloat(inputs.lon.value) || 0
+            };
+        }
+
+        // --- Location Search Handler ---
+        async function searchLocations(query) {
+            const cleanQuery = query.trim();
+            if (!cleanQuery) {
+                locationDropdown.classList.add('hidden');
+                return;
+            }
+
+            searchBtnIcon.className = 'fa-solid fa-circle-notch animate-spin';
+            searchLocationBtn.disabled = true;
+
+            const targetUrl = `${SEARCH_API_URL}?q=${encodeURIComponent(cleanQuery)}`;
+
+            try {
+                let data = null;
+
+                try {
+                    const { response } = await fetchWithCorsFallback(targetUrl, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    data = await response.json();
+                } catch (cosmyErr) {
+                    const fallbackGeoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cleanQuery)}&count=6&language=en&format=json`;
+                    const geoRes = await fetch(fallbackGeoUrl);
+                    if (!geoRes.ok) throw cosmyErr;
+                    const geoData = await geoRes.json();
+                    data = (geoData.results || []).map(item => ({
+                        name: item.name,
+                        state: item.admin1 || '',
+                        country: item.country || '',
+                        lat: item.latitude,
+                        lon: item.longitude,
+                        timezone: item.timezone
+                    }));
+                }
+
+                const list = Array.isArray(data)
+                    ? data
+                    : (data.results || data.data || data.locations || data.items || [data]);
+
+                renderLocationDropdown(list, cleanQuery);
+            } catch (err) {
+                locationDropdown.innerHTML = `
+                    <div class="p-3 text-xs text-rose-300 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-exclamation text-rose-400"></i>
+                        <span>Could not find locations. Try another city name.</span>
+                    </div>
+                `;
+                locationDropdown.classList.remove('hidden');
+            } finally {
+                searchBtnIcon.className = 'fa-solid fa-search';
+                searchLocationBtn.disabled = false;
+            }
+        }
+
+        function renderLocationDropdown(list, query) {
+            if (!list || list.length === 0) {
+                locationDropdown.innerHTML = `
+                    <div class="p-3 text-xs text-slate-400">No locations found for "${query}".</div>
+                `;
+                locationDropdown.classList.remove('hidden');
+                return;
+            }
+
+            locationDropdown.innerHTML = '';
+            list.forEach(item => {
+                if (!item || typeof item !== 'object') return;
+                const lat = item.lat ?? item.latitude;
+                const lon = item.lon ?? item.lng ?? item.longitude;
+                if (lat === undefined || lon === undefined) return;
+
+                const name = item.name || item.city || item.display_name || query;
+                const subParts = [item.state || item.region, item.country].filter(Boolean);
+                const fullName = subParts.length ? `${name}, ${subParts.join(', ')}` : name;
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'w-full text-left px-3.5 py-2.5 hover:bg-violet-600/20 transition flex items-center justify-between gap-2';
+                btn.innerHTML = `
+                    <div class="truncate">
+                        <div class="text-xs font-semibold text-white truncate">${fullName}</div>
+                        <div class="text-[10px] text-slate-400 font-mono">${Number(lat).toFixed(4)}, ${Number(lon).toFixed(4)}</div>
+                    </div>
+                    <span class="text-[10px] text-violet-300 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded shrink-0">Select</span>
+                `;
+
+                btn.addEventListener('click', () => {
+                    inputs.lat.value = Number(lat);
+                    inputs.lon.value = Number(lon);
+                    selectedLocationText.textContent = fullName;
+                    selectedLocationBadge.classList.remove('hidden');
+                    locationDropdown.classList.add('hidden');
+                    showToast(`Location set to ${name}`);
+                });
+
+                locationDropdown.appendChild(btn);
+            });
+
+            locationDropdown.classList.remove('hidden');
+        }
+
+        // Location Search & Preset Listeners
+        searchLocationBtn.addEventListener('click', () => {
+            searchLocations(locationSearchInput.value);
+        });
+
+        locationSearchInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            clearSearchBtn.classList.toggle('hidden', !val);
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                searchLocations(val);
+            }, 400);
+        });
+
+        locationSearchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                clearTimeout(searchDebounceTimer);
+                searchLocations(locationSearchInput.value);
+            }
+        });
+
+        clearSearchBtn.addEventListener('click', () => {
+            locationSearchInput.value = '';
+            clearSearchBtn.classList.add('hidden');
+            locationDropdown.classList.add('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!locationSearchInput.contains(e.target) && !locationDropdown.contains(e.target) && !searchLocationBtn.contains(e.target)) {
+                locationDropdown.classList.add('hidden');
+            }
+        });
+
+        document.querySelectorAll('.city-preset').forEach(btn => {
+            btn.addEventListener('click', () => {
+                inputs.lat.value = btn.dataset.lat;
+                inputs.lon.value = btn.dataset.lon;
+                const cityName = btn.textContent.replace(/^[^\w]+/, '').trim();
+                selectedLocationText.textContent = cityName;
+                selectedLocationBadge.classList.remove('hidden');
+                showToast(`Location set to ${cityName}`);
+            });
+        });
+
+        document.getElementById('geoBtn').addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                showToast('Geolocation is not supported by your browser', true);
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    inputs.lat.value = Number(pos.coords.latitude.toFixed(4));
+                    inputs.lon.value = Number(pos.coords.longitude.toFixed(4));
+                    selectedLocationText.textContent = 'Current GPS Location';
+                    selectedLocationBadge.classList.remove('hidden');
+                    showToast('Coordinates updated from GPS');
+                },
+                () => {
+                    showToast('Unable to retrieve your location', true);
+                }
+            );
+        });
+
+        document.getElementById('fillDefaultBtn').addEventListener('click', () => {
+            inputs.birthDate.value = DEFAULT_PAYLOAD.birthDate;
+            inputs.birthTime.value = DEFAULT_PAYLOAD.birthTime;
+            inputs.lat.value = DEFAULT_PAYLOAD.lat;
+            inputs.lon.value = DEFAULT_PAYLOAD.lon;
+            selectedLocationText.textContent = 'New York';
+            selectedLocationBadge.classList.remove('hidden');
+            setBirthInputVisible(true);
+            showToast('Reset to default birth details');
+        });
+
+        // --- Render Visual Cards Dynamically (User-Friendly Layout) ---
+        function renderVisualData(data) {
+            visualView.innerHTML = '';
+
+            if (!data || typeof data !== 'object') {
+                visualView.innerHTML = `<div class="p-4 bg-slate-900 rounded-xl text-sm text-slate-300">${String(data)}</div>`;
+                return;
+            }
+
+            const ZODIAC_SYMBOLS = {
+                aries: '♈', taurus: '♉', gemini: '♊', cancer: '♋',
+                leo: '♌', virgo: '♍', libra: '♎', scorpio: '♏',
+                sagittarius: '♐', capricorn: '♑', aquarius: '♒', pisces: '♓'
+            };
+
+            const PLANET_ICONS = {
+                sun: '☀️', moon: '🌙', ascendant: '⬆️', rising: '⬆️',
+                mercury: '☿️', venus: '♀️', mars: '♂️', jupiter: '♃',
+                saturn: '♄', uranus: '♅', neptune: '♆', pluto: '♇'
+            };
+
+            const CORE_PLANETS = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
+
+            function getSignSymbol(sign) {
+                if (!sign) return '✨';
+                const key = String(sign).toLowerCase().trim();
+                return ZODIAC_SYMBOLS[key] || '✨';
+            }
+
+            function formatPlanetBadge(name, info) {
+                const sign = info?.sign || info?.zodiac || info?.zodiac_sign || (typeof info === 'string' ? info : 'Unknown');
+                const house = info?.house || info?.house_number;
+                const deg = info?.degree ?? info?.deg ?? info?.norm_degree;
+                const isRetrograde = info?.retrograde || info?.is_retrograde || info?.isRetrograde;
+                const degText = typeof deg === 'number' ? `${Math.floor(deg)}°` : (deg ? `${deg}` : '');
+
+                return {
+                    name,
+                    sign,
+                    symbol: getSignSymbol(sign),
+                    icon: PLANET_ICONS[name.toLowerCase()] || '🪐',
+                    house: house ? `House ${house}` : '',
+                    degText,
+                    isRetrograde
+                };
+            }
+
+            // Normalize planetary data from common API shapes
+            const planetsMap = {};
+            const sourcePlanets = data.planets || data.points || data.placements || data;
+
+            if (Array.isArray(sourcePlanets)) {
+                sourcePlanets.forEach(p => {
+                    const key = (p.name || p.planet || p.body || '').toLowerCase();
+                    if (key) planetsMap[key] = p;
+                });
+            } else if (typeof sourcePlanets === 'object' && sourcePlanets !== null) {
+                Object.entries(sourcePlanets).forEach(([k, v]) => {
+                    if (v && typeof v === 'object') {
+                        planetsMap[k.toLowerCase()] = v;
+                    }
+                });
+            }
+
+            // Detect Rising / Ascendant
+            const ascendantData =
+                planetsMap['ascendant'] ||
+                planetsMap['rising'] ||
+                planetsMap['asc'] ||
+                data.ascendant ||
+                data.rising ||
+                (Array.isArray(data.houses) && data.houses[0]) ||
+                (data.houses && (data.houses['1'] || data.houses['house_1'] || data.houses['first']));
+
+            // 1. Birth Summary Header
+            const payload = getPayload();
+            const locationName = selectedLocationBadge.classList.contains('hidden')
+                ? `${payload.lat.toFixed(2)}°, ${payload.lon.toFixed(2)}°`
+                : selectedLocationText.textContent;
+
+            const summaryBanner = document.createElement('div');
+            summaryBanner.className = 'bg-gradient-to-r from-violet-950/60 to-indigo-950/60 border border-violet-500/20 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3';
+            summaryBanner.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-violet-500/20 flex items-center justify-center text-violet-300">
+                        <i class="fa-solid fa-calendar-day"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">Birth Profile</div>
+                        <div class="text-sm font-semibold text-white">
+                            ${payload.year}-${String(payload.month).padStart(2, '0')}-${String(payload.day).padStart(2, '0')} 
+                            &bull; ${String(payload.hour).padStart(2, '0')}:${String(payload.minute).padStart(2, '0')}
+                        </div>
+                    </div>
+                </div>
+                <div class="text-xs text-violet-200 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-white/5 flex items-center gap-1.5">
+                    <i class="fa-solid fa-location-dot text-violet-400"></i>
+                    <span class="truncate max-w-[200px]">${locationName}</span>
+                </div>
+            `;
+            visualView.appendChild(summaryBanner);
+
+            // 2. Highlighted "Big Three" (Sun, Moon, Rising)
+            const bigThreeItems = [
+                { key: 'sun', label: 'Sun Sign', subtitle: 'Core Identity', info: planetsMap['sun'] },
+                { key: 'moon', label: 'Moon Sign', subtitle: 'Emotions & Inner Self', info: planetsMap['moon'] },
+                { key: 'rising', label: 'Rising Sign', subtitle: 'Outer Persona', info: ascendantData }
+            ].filter(item => item.info);
+
+            if (bigThreeItems.length > 0) {
+                const bigThreeSection = document.createElement('div');
+                bigThreeSection.className = 'space-y-2.5';
+                bigThreeSection.innerHTML = `
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-amber-300/90 flex items-center gap-1.5">
+                        <i class="fa-solid fa-crown text-[11px]"></i> Your Big Three
+                    </h3>
+                `;
+
+                const bigThreeGrid = document.createElement('div');
+                bigThreeGrid.className = 'grid grid-cols-1 sm:grid-cols-3 gap-3';
+
+                bigThreeItems.forEach(item => {
+                    const formatted = formatPlanetBadge(item.key, item.info);
+                    const card = document.createElement('div');
+                    card.className = 'bg-gradient-to-br from-slate-900/95 via-violet-950/30 to-slate-900/95 border border-violet-500/30 rounded-xl p-4 relative overflow-hidden';
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-semibold text-violet-300">${item.label}</span>
+                            <span class="text-lg" aria-hidden="true">${formatted.symbol}</span>
+                        </div>
+                        <div class="text-lg font-bold text-white capitalize">${formatted.sign}</div>
+                        <div class="text-[11px] text-slate-400 mt-1 flex items-center justify-between">
+                            <span>${item.subtitle}</span>
+                            ${formatted.house ? `<span class="text-amber-300/90 font-medium">${formatted.house}</span>` : ''}
+                        </div>
+                    `;
+                    bigThreeGrid.appendChild(card);
+                });
+
+                bigThreeSection.appendChild(bigThreeGrid);
+                visualView.appendChild(bigThreeSection);
+            }
+
+            // 3. Core Personal & Social Planets (Clean, Easy-to-Scan Cards)
+            const otherPlanets = CORE_PLANETS
+                .filter(p => p !== 'sun' && p !== 'moon' && planetsMap[p])
+                .map(p => formatPlanetBadge(p, planetsMap[p]));
+
+            if (otherPlanets.length > 0) {
+                const planetsSection = document.createElement('div');
+                planetsSection.className = 'space-y-2.5';
+                planetsSection.innerHTML = `
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-violet-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-planet-ringed text-[11px]"></i> Planetary Placements
+                    </h3>
+                `;
+
+                const planetsGrid = document.createElement('div');
+                planetsGrid.className = 'grid grid-cols-2 sm:grid-cols-4 gap-2.5';
+
+                otherPlanets.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-slate-900/75 hover:bg-slate-900 border border-slate-800/90 rounded-xl p-3 transition';
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+                            <span class="capitalize font-medium text-slate-300">${p.icon} ${p.name}</span>
+                            ${p.isRetrograde ? '<span class="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-300 font-semibold" title="Retrograde">Rx</span>' : ''}
+                        </div>
+                        <div class="text-sm font-bold text-white capitalize flex items-center gap-1.5">
+                            <span>${p.symbol}</span>
+                            <span>${p.sign}</span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 mt-1 flex items-center justify-between">
+                            <span>${p.house || '—'}</span>
+                            <span>${p.degText}</span>
+                        </div>
+                    `;
+                    planetsGrid.appendChild(card);
+                });
+
+                planetsSection.appendChild(planetsGrid);
+                visualView.appendChild(planetsSection);
+            }
+
+            // Fallback if API returned an unrecognized structure without standard planet names
+            if (bigThreeItems.length === 0 && otherPlanets.length === 0) {
+                const fallbackGrid = document.createElement('div');
+                fallbackGrid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3';
+                Object.entries(data).slice(0, 8).forEach(([key, val]) => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-slate-900/80 border border-slate-800 rounded-xl p-3.5';
+                    const displayVal = (typeof val === 'object' && val !== null)
+                        ? (val.sign || val.name || JSON.stringify(val))
+                        : String(val ?? 'N/A');
+                    card.innerHTML = `
+                        <div class="text-xs text-slate-400 capitalize font-medium">${key.replace(/_/g, ' ')}</div>
+                        <div class="text-sm font-semibold text-white mt-1 capitalize">${displayVal}</div>
+                    `;
+                    fallbackGrid.appendChild(card);
+                });
+                visualView.appendChild(fallbackGrid);
+            }
+
+            // 4. Optional Collapsible Toggle for Extra Details (Nodes, Houses, Aspects)
+            const extraEntries = Object.entries(data).filter(([k]) => {
+                const lower = k.toLowerCase();
+                return !['planets', 'points', 'placements', 'sun', 'moon', 'ascendant', 'rising'].includes(lower);
+            });
+
+            if (extraEntries.length > 0) {
+                const detailsWrapper = document.createElement('div');
+                detailsWrapper.className = 'pt-1';
+
+                const toggleBtn = document.createElement('button');
+                toggleBtn.type = 'button';
+                toggleBtn.className = 'text-xs text-slate-400 hover:text-violet-300 transition flex items-center gap-1.5 py-1';
+                toggleBtn.innerHTML = `<i class="fa-solid fa-chevron-right text-[10px] transition-transform" id="extraToggleIcon"></i> <span>Show Houses & Extra Details</span>`;
+
+                const extraContainer = document.createElement('div');
+                extraContainer.className = 'hidden mt-3 space-y-3 bg-slate-950/60 border border-slate-800/80 rounded-xl p-4';
+
+                extraEntries.forEach(([key, val]) => {
+                    if (!val || typeof val !== 'object') return;
+                    const block = document.createElement('div');
+                    block.className = 'space-y-1.5';
+                    block.innerHTML = `<div class="text-xs font-semibold uppercase tracking-wider text-violet-400">${key.replace(/_/g, ' ')}</div>`;
+
+                    const itemsGrid = document.createElement('div');
+                    itemsGrid.className = 'grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs';
+
+                    const list = Array.isArray(val) ? val : Object.entries(val).map(([k, v]) => ({ label: k, ...(typeof v === 'object' ? v : { value: v }) }));
+                    list.slice(0, 12).forEach((entry, idx) => {
+                        const title = entry.name || entry.label || entry.house || `#${idx + 1}`;
+                        const summary = entry.sign || entry.aspect || entry.value || '';
+                        if (!summary) return;
+                        const chip = document.createElement('div');
+                        chip.className = 'bg-slate-900/90 border border-slate-800 rounded-lg px-2.5 py-2 flex justify-between items-center gap-2';
+                        chip.innerHTML = `
+                            <span class="text-slate-400 capitalize truncate">${String(title).replace(/_/g, ' ')}</span>
+                            <span class="text-slate-200 font-medium capitalize shrink-0">${getSignSymbol(summary)} ${summary}</span>
+                        `;
+                        itemsGrid.appendChild(chip);
+                    });
+
+                    if (itemsGrid.children.length > 0) {
+                        block.appendChild(itemsGrid);
+                        extraContainer.appendChild(block);
+                    }
+                });
+
+                if (extraContainer.children.length > 0) {
+                    toggleBtn.addEventListener('click', () => {
+                        const isHidden = extraContainer.classList.toggle('hidden');
+                        const icon = toggleBtn.querySelector('#extraToggleIcon');
+                        const label = toggleBtn.querySelector('span');
+                        icon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(90deg)';
+                        label.textContent = isHidden ? 'Show Houses & Extra Details' : 'Hide Houses & Extra Details';
+                    });
+                    detailsWrapper.appendChild(toggleBtn);
+                    detailsWrapper.appendChild(extraContainer);
+                    visualView.appendChild(detailsWrapper);
+                }
+            }
+        }
+
+        // --- Calculate Natal Chart ---
+        async function fetchNatalChart(e) {
+            if (e) e.preventDefault();
+
+            const payload = getPayload();
+
+            // UI Loading state
+            emptyState.classList.add('hidden');
+            errorState.classList.add('hidden');
+            visualView.classList.add('hidden');
+            aiQuestionSection.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+            btnIcon.className = 'fa-solid fa-circle-notch animate-spin';
+            btnText.textContent = 'Calculating...';
+
+            try {
+                const { response } = await fetchWithCorsFallback(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const rawText = await response.text();
+                let parsedData;
+                try {
+                    parsedData = JSON.parse(rawText);
+                } catch {
+                    parsedData = { result: rawText };
+                }
+
+                if (!response.ok) {
+                    throw new Error(parsedData.message || parsedData.error || 'Could not calculate natal chart');
+                }
+
+                currentNatalData = parsedData;
+                renderVisualData(parsedData);
+
+                loadingState.classList.add('hidden');
+                visualView.classList.remove('hidden');
+                aiQuestionSection.classList.remove('hidden');
+                aiAnswerBox.classList.add('hidden');
+                setBirthInputVisible(false);
+                showToast('Natal chart ready!');
+
+            } catch (err) {
+                loadingState.classList.add('hidden');
+                errorState.classList.remove('hidden');
+
+                errorTitle.textContent = 'Unable to Calculate Natal Chart';
+                errorDesc.textContent = err.message || 'Please check your input parameters and try again.';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                btnIcon.className = 'fa-solid fa-paper-plane';
+                btnText.textContent = 'Calculate Natal Chart';
+            }
+        }
+
+        // --- Format AI Markdown Response Safely ---
+        function formatAiResponse(text) {
+            if (typeof marked !== 'undefined' && typeof DOMPurify !== 'undefined') {
+                marked.setOptions({
+                    breaks: true,
+                    gfm: true
+                });
+                const rawHtml = marked.parse(text);
+                return DOMPurify.sanitize(rawHtml);
+            }
+
+            // Fallback formatter if CDN libraries fail to load
+            const escaped = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+
+            return escaped
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em class="text-violet-200">$1</em>')
+                .split(/\n{2,}/)
+                .map(para => `<p>${para.replace(/\n/g, '<br>')}</p>`)
+                .join('');
+        }
+
+        // --- Ask Gemini AI Based on Natal Chart Info ---
+        async function askGeminiAboutChart(questionText) {
+            if (!currentNatalData) {
+                showToast('Please calculate your natal chart first', true);
+                return;
+            }
+
+            const cleanQuestion = questionText.trim();
+            if (!cleanQuestion) return;
+
+            askAiBtn.disabled = true;
+            askAiBtn.classList.add('opacity-75', 'cursor-not-allowed');
+            askAiIcon.className = 'fa-solid fa-circle-notch animate-spin';
+            askAiText.textContent = 'Reading Chart...';
+
+            aiLoadingBox.classList.remove('hidden');
+            aiAnswerBox.classList.add('hidden');
+
+            const payload = getPayload();
+            const prompt = `You are a warm, insightful, and knowledgeable astrologer. Answer the user's question based strictly on their calculated natal chart data below. Use clear, well-structured Markdown (headings, bullet points, and bold text for planetary placements) so the reading is easy and enjoyable to scan.
+
+Birth Details:
+- Date: ${payload.year}-${String(payload.month).padStart(2, '0')}-${String(payload.day).padStart(2, '0')}
+- Time: ${String(payload.hour).padStart(2, '0')}:${String(payload.minute).padStart(2, '0')}
+- Coordinates: Lat ${payload.lat}, Lon ${payload.lon}
+
+Natal Chart Data:
+${JSON.stringify(currentNatalData, null, 2)}
+
+User Question:
+"${cleanQuestion}"`;
+
+            const apiKey = "";
+            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+            try {
+                let response;
+                let attempt = 0;
+                const maxRetries = 3;
+
+                while (attempt < maxRetries) {
+                    try {
+                        response = await fetch(geminiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: [{ parts: [{ text: prompt }] }]
+                            })
+                        });
+                        if (response.ok) break;
+                    } catch (netErr) {
+                        if (attempt === maxRetries - 1) throw netErr;
+                    }
+                    attempt++;
+                    await new Promise(res => setTimeout(res, 600 * attempt));
+                }
+
+                if (!response || !response.ok) {
+                    throw new Error('Unable to connect to Gemini AI right now.');
+                }
+
+                const result = await response.json();
+                const aiText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (!aiText) {
+                    throw new Error('No interpretation was returned. Please try another question.');
+                }
+
+                aiQuestionEcho.textContent = cleanQuestion;
+                aiAnswerContent.innerHTML = formatAiResponse(aiText);
+                aiAnswerContent.dataset.rawMarkdown = aiText;
+
+                aiLoadingBox.classList.add('hidden');
+                aiAnswerBox.classList.remove('hidden');
+            } catch (err) {
+                aiLoadingBox.classList.add('hidden');
+                showToast(err.message || 'Failed to get AI response', true);
+            } finally {
+                askAiBtn.disabled = false;
+                askAiBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                askAiIcon.className = 'fa-solid fa-wand-magic-sparkles';
+                askAiText.textContent = 'Ask Gemini';
+            }
+        }
+
+        // AI Question Form & Suggestion Event Listeners
+        aiQuestionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            askGeminiAboutChart(aiQuestionInput.value);
+        });
+
+        document.querySelectorAll('.ai-suggestion-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const question = btn.textContent.replace(/^[^\w]+/, '').trim();
+                aiQuestionInput.value = question;
+                askGeminiAboutChart(question);
+            });
+        });
+
+        copyAiAnswerBtn.addEventListener('click', () => {
+            const textToCopy = aiAnswerContent.dataset.rawMarkdown || aiAnswerContent.innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Astrological reading copied!');
+            } catch {
+                showToast('Unable to copy text', true);
+            }
+            document.body.removeChild(textarea);
+        });
+
+        // Main Form & Quick Run Listeners
+        form.addEventListener('submit', fetchNatalChart);
+
+        document.getElementById('quickRunBtn').addEventListener('click', () => {
+            fetchNatalChart();
+        });
+    </script>
+</body>
+</html>
